@@ -205,7 +205,7 @@ public final class AfclCompoundsParallelFor {
    * @param parallelForName the name of the parallelFor function
    */
   protected static void attachAggregatedDataOut(final DataOuts dataOut, final EnactmentGraph graph,
-      final String parallelForName, Workflow workflow) {
+      final String parallelForName, final Workflow workflow) {
     // create the aggregation function
     final String aggregationId = parallelForName + ConstantsEEModel.KeywordSeparator1
         + ConstantsEEModel.FuncNameUtilityAggregation + ConstantsEEModel.KeywordSeparator1
