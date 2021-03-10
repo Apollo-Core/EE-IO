@@ -1,0 +1,7 @@
+include 'EE-Core'
+include 'EE-Guice'
+include 'EE-Model'
+
+project (':EE-Core').projectDir = new File(settingsDir, "../EE-Core")
+project (':EE-Model').projectDir = new File(settingsDir, "../EE-Model")
+project (':EE-Guice').projectDir = new File(settingsDir, "../EE-Guice")
