@@ -1,7 +1,7 @@
 buildscript {
-	repositories {
-		jcenter()
-	}
+  repositories {
+    jcenter()
+  }
 }
 
 apply plugin: 'java'
@@ -11,8 +11,8 @@ apply plugin: 'maven'
 apply plugin: 'jacoco'
 // for compliance with higher Java versions
 jacoco {
-		toolVersion = "0.8.5"
-	}
+  toolVersion = "0.8.5"
+}
 // to use GitHub repositories as dependencies
 
 group 'Apollo-Core-EE-IO'
@@ -20,15 +20,15 @@ version '1.0-SNAPSHOT'
 
 
 repositories {
-	mavenCentral()
-	maven {
-		name "jitpack"
-		url 'https://jitpack.io' }
+  mavenCentral()
+  maven {
+    name "jitpack"
+    url 'https://jitpack.io' }
 }
 
 dependencies {
-	
-	// dependencies to other parts of the Apollo Core EE
+
+  // dependencies to other parts of the Apollo Core EE
   if (project.hasProperty("local")) {
     implementation project (':EE-Core')
     implementation project (':EE-Guice')
@@ -38,32 +38,35 @@ dependencies {
     implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
     implementation 'com.github.Apollo-Core:EE-Model:main-SNAPSHOT'
   }
-	
-	implementation 'com.github.ApolloCEC:socketUtils:-SNAPSHOT'
-	
-	// dependencies to projects from other parts of Apollo
-	implementation 'com.github.Apollo-AFCL:AFCLCore-AFCLv1.1:ifAdjustments-SNAPSHOT'
-	
-	// gson to define the format of the exchanged messages
-	implementation 'com.google.code.gson:gson:2.8.6'
-	
-	// dependency to Opt4J
-	implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
-	// dependency to opendse
-	implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
-	
-	// test dependencies	
-	testCompile group: 'junit', 		name: 'junit', 					version: '4.+'
-	testCompile group: 'org.mockito',     name: 'mockito-core',     version: '3.4.4'
+
+  implementation 'com.github.ApolloCEC:socketUtils:-SNAPSHOT'
+
+  // dependencies to projects from other parts of Apollo
+  implementation 'com.github.Apollo-AFCL:AFCLCore-AFCLv1.1:ifAdjustments-SNAPSHOT'
+
+  // SLF4J and Logback for logging
+  implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
+
+  // gson to define the format of the exchanged messages
+  implementation 'com.google.code.gson:gson:2.8.6'
+
+  // dependency to Opt4J
+  implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
+  // dependency to opendse
+  implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
+
+  // test dependencies
+  testCompile group: 'junit', 		name: 'junit', 					version: '4.+'
+  testCompile group: 'org.mockito',     name: 'mockito-core',     version: '3.4.4'
 }
 
 jacocoTestReport {
-	reports {
-		xml.enabled true
-	}
-	afterEvaluate {
-		classDirectories.from = files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: '**/modules/**')
-		})
-	}
+  reports {
+    xml.enabled true
+  }
+  afterEvaluate {
+    classDirectories.from = files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: '**/modules/**')
+    })
+  }
 }
