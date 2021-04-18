@@ -126,8 +126,8 @@ public class SpecificationProviderFile implements SpecificationProvider {
    * @return a mapping between the given task and the given resources and
    *         annotates it with properties following the resource entry.
    */
-  protected Mapping<Task, Resource> createMapping(Task task, ResourceEntry resEntry,
-      ResourceGraph resGraph) {
+  protected Mapping<Task, Resource> createMapping(final Task task, final ResourceEntry resEntry,
+      final ResourceGraph resGraph) {
     Resource res = getResourceForResourceEntry(resGraph, resEntry);
     if (resEntry.getType().equals(EnactmentMode.Local.name())) {
       return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Local,

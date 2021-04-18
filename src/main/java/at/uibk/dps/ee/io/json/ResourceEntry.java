@@ -42,7 +42,7 @@ public class ResourceEntry {
     return implementationId;
   }
 
-  public void setImplementationId(String implementationId) {
+  public void setImplementationId(final String implementationId) {
     this.implementationId = implementationId;
   }
 
