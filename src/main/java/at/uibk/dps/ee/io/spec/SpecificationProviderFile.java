@@ -19,7 +19,7 @@ import at.uibk.dps.ee.model.graph.SpecificationProvider;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunction;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUser;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping;
-import at.uibk.dps.ee.model.properties.PropertyServiceResource.ResourceType;
+import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
 import at.uibk.dps.ee.model.properties.PropertyServiceResourceServerless;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunction.UsageType;
 import net.sf.opendse.model.Mapping;
@@ -109,12 +109,36 @@ public class SpecificationProviderFile implements SpecificationProvider {
    */
   protected Set<Mapping<Task, Resource>> getMappingsForTask(final Task task,
       final ResourceInformationJsonFile resInfo, final ResourceGraph rGraph) {
-    final String funcTypeString = PropertyServiceFunctionUser.getFunctionTypeString(task);
+    final String funcTypeString = PropertyServiceFunctionUser.getTypeId(task);
     return resInfo.stream()
         .filter(functionEntry -> funcTypeString.equals(functionEntry.getFunctionType()))
         .flatMap(functionEntry -> functionEntry.getResources().stream())
-        .map(resEntry -> getResourceForResourceEntry(rGraph, resEntry))
-        .map(res -> PropertyServiceMapping.createMapping(task, res)).collect(Collectors.toSet());
+        .map(resEntry -> createMapping(task, resEntry, rGraph)).collect(Collectors.toSet());
+  }
+
+  /**
+   * Creates a mapping between the given task and the given resources and
+   * annotates it with properties following the resource entry.
+   * 
+   * @param task the mapping source
+   * @param res the mapping target
+   * @param resEntry the resource entry describing the attributes
+   * @return a mapping between the given task and the given resources and
+   *         annotates it with properties following the resource entry.
+   */
+  protected Mapping<Task, Resource> createMapping(Task task, ResourceEntry resEntry,
+      ResourceGraph resGraph) {
+    Resource res = getResourceForResourceEntry(resGraph, resEntry);
+    if (resEntry.getType().equals(EnactmentMode.Local.name())) {
+      return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Local,
+          ConstantsEEModel.implIdLocalNative);
+    } else if (resEntry.getType().equals(EnactmentMode.Serverless.name())) {
+      return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Serverless,
+          PropertyServiceResourceServerless.getUri(res));
+    } else {
+      throw new IllegalStateException(
+          "Resource entry with unknown enactment mode: " + resEntry.getType());
+    }
   }
 
   /**
@@ -127,10 +151,10 @@ public class SpecificationProviderFile implements SpecificationProvider {
   protected Resource getResourceForResourceEntry(final ResourceGraph rGraph,
       final ResourceEntry resEntry) {
     Optional<Resource> result;
-    if (resEntry.getType().equals(ResourceType.Local.name())) {
+    if (resEntry.getType().equals(EnactmentMode.Local.name())) {
       // Resource is local EE
       result = Optional.ofNullable(rGraph.getVertex(ConstantsEEModel.idLocalResource));
-    } else if (resEntry.getType().equals(ResourceType.Serverless.name())) {
+    } else if (resEntry.getType().equals(EnactmentMode.Serverless.name())) {
       // Serverless resource => look for the Uri
       if (!resEntry.getProperties().containsKey(PropertyServiceResourceServerless.propNameUri)) {
         throw new IllegalArgumentException("No Uri annotated for serverless resource");
