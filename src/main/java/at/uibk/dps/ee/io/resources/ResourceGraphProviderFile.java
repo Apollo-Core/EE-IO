@@ -10,8 +10,8 @@ import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.ResourceGraph;
 import at.uibk.dps.ee.model.graph.ResourceGraphProvider;
 import at.uibk.dps.ee.model.properties.PropertyServiceLink;
+import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
 import at.uibk.dps.ee.model.properties.PropertyServiceResource;
-import at.uibk.dps.ee.model.properties.PropertyServiceResource.ResourceType;
 import at.uibk.dps.ee.model.properties.PropertyServiceResourceServerless;
 import net.sf.opendse.model.Resource;
 
@@ -56,8 +56,8 @@ public class ResourceGraphProviderFile implements ResourceGraphProvider {
     final ResourceInformationJsonFile resourceInformation =
         ResourceInformationJsonFile.readFromFile(filePath);
     // always add a node representing the EE
-    final Resource eeRes = PropertyServiceResource.createResource(ConstantsEEModel.idLocalResource,
-        ResourceType.Local);
+    final Resource eeRes = PropertyServiceResource.createResource(ConstantsEEModel.idLocalResource);
+    
     result.addVertex(eeRes);
     resourceInformation.stream()
         .flatMap(functionTypeEntry -> functionTypeEntry.getResources().stream())
@@ -75,15 +75,15 @@ public class ResourceGraphProviderFile implements ResourceGraphProvider {
    */
   protected void processResourceEntry(final ResourceGraph resourceGraph, final Resource eeRes,
       final ResourceEntry resEntry) {
-    final ResourceType resourceType = ResourceType.valueOf(resEntry.getType());
+    final EnactmentMode resourceType = EnactmentMode.valueOf(resEntry.getType());
     Optional<Resource> newResourceOpt;
-    if (resourceType.equals(ResourceType.Local)) {
+    if (resourceType.equals(EnactmentMode.Local)) {
       // nothing to do, EE already in the graph
       if (!resEntry.getProperties().isEmpty()) {
         throw new IllegalArgumentException("Entry of the EE resource should not have properties.");
       }
       return;
-    } else if (resourceType.equals(ResourceType.Serverless)) {
+    } else if (resourceType.equals(EnactmentMode.Serverless)) {
       final String uri =
           resEntry.getProperties().get(PropertyServiceResourceServerless.propNameUri).getAsString();
       newResourceOpt =

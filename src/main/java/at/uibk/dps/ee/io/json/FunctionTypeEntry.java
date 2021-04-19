@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class FunctionTypeEntry {
 
+  // corresponds to the TypeID
   protected String functionType;
   protected List<ResourceEntry> resources;
 

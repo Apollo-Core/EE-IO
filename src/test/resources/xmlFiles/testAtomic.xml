@@ -4,7 +4,7 @@
   <application>
     <task id="atomicFunction">
       <attributes>
-        <attribute name="FunctionType" type="STRING">addition</attribute>
+        <attribute name="TypeID" type="STRING">addition</attribute>
         <attribute name="UsageType" type="STRING">User</attribute>
       </attributes>
     </task>
