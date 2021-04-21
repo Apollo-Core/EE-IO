@@ -1,5 +1,6 @@
 package at.uibk.dps.ee.io.modules;
 
+import org.opt4j.core.config.annotations.File;
 import org.opt4j.core.config.annotations.Info;
 import org.opt4j.core.config.annotations.Order;
 import at.uibk.dps.ee.guice.modules.OutputModule;
@@ -9,6 +10,7 @@ public class LoggingModule extends OutputModule {
 
   @Order(1)
   @Info("Path of the file configuring the loggers.")
+  @File
   public String pathToConfigFile = "./logging/config/logback.xml";
 
   @Override
