@@ -67,14 +67,14 @@ public class EeStarter extends Starter {
    * @param typeMappingsFile the file describing the type mappings
    * @throws Exception
    */
-  protected void executeConfigFileFileLocations(String configFile, String inputFile,
-      String workflowFile, String typeMappingsFile) throws Exception {
-    Set<Module> modules = getModulesFromConfigFile(configFile);
-    modules.removeIf(module -> (module instanceof InputModule));
-    SpecificationInputModule specModule = new SpecificationInputModule();
+  protected void executeConfigFileFileLocations(final String configFile, final String inputFile,
+      final String workflowFile, final String typeMappingsFile) throws Exception {
+    final Set<Module> modules = getModulesFromConfigFile(configFile);
+    modules.removeIf(module -> module instanceof InputModule);
+    final SpecificationInputModule specModule = new SpecificationInputModule();
     specModule.setFilePathAfcl(workflowFile);
     specModule.setFilePathMappingFile(typeMappingsFile);
-    InputReaderFileModule inputModule = new InputReaderFileModule();
+    final InputReaderFileModule inputModule = new InputReaderFileModule();
     inputModule.setFilePath(inputFile);
     modules.add(specModule);
     modules.add(inputModule);
@@ -89,8 +89,8 @@ public class EeStarter extends Starter {
    * @param configFile the config file
    * @throws Exception
    */
-  protected void executeConfigFile(String configFile) throws Exception {
-    Set<Module> modules = getModulesFromConfigFile(configFile);
+  protected void executeConfigFile(final String configFile) throws Exception {
+    final Set<Module> modules = getModulesFromConfigFile(configFile);
     runWithModules(modules);
   }
 
@@ -100,8 +100,8 @@ public class EeStarter extends Starter {
    * @param modules the provided modules.
    * @throws Exception
    */
-  protected void runWithModules(Set<Module> modules) throws Exception {
-    Task task = new EeTask();
+  protected void runWithModules(final Set<Module> modules) throws Exception {
+    final Task task = new EeTask();
     task.init(modules);
     task.call();
   }
@@ -112,9 +112,9 @@ public class EeStarter extends Starter {
    * @param configFile the given config file
    * @return the set of modules used in the given config file
    */
-  protected Set<Module> getModulesFromConfigFile(String configFile) {
-    ModuleLoader loader = new ModuleLoader(new ModuleRegister(new ModuleAutoFinder()));
-    Set<Module> modules = new HashSet<>();
+  protected Set<Module> getModulesFromConfigFile(final String configFile) {
+    final ModuleLoader loader = new ModuleLoader(new ModuleRegister(new ModuleAutoFinder()));
+    final Set<Module> modules = new HashSet<>();
     modules.addAll(loader.load(configFile));
     modules.removeIf(module -> (module instanceof VisualizationModule));
     return modules;

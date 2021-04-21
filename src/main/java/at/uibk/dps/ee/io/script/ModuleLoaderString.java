@@ -20,14 +20,14 @@ import com.google.inject.Module;
  * 
  * @author Fedor Smirnov
  */
-public class ModuleLoaderString extends ModuleLoader{
+public class ModuleLoaderString extends ModuleLoader {
 
   /**
    * See parent constructor
    * 
    * @param moduleRegister
    */
-  public ModuleLoaderString(ModuleRegister moduleRegister) {
+  public ModuleLoaderString(final ModuleRegister moduleRegister) {
     super(moduleRegister);
   }
 
@@ -38,21 +38,19 @@ public class ModuleLoaderString extends ModuleLoader{
    * @param xmlString the configuration string in xml format
    * @return the configured modules
    */
-  public Set<Module> loadModulesFromString(String xmlString) {
-    
-    Set<Module> modules = new HashSet<>();
+  public Set<Module> loadModulesFromString(final String xmlString) {
+    final Set<Module> modules = new HashSet<>();
     try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      final DocumentBuilder builder = factory.newDocumentBuilder();
+      final Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
       modules.addAll(get(doc.getFirstChild()));
-      
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (ParserConfigurationException parserExc) {
+      throw new IllegalStateException("ParserConfigException during module load.", parserExc);
+    } catch (SAXException saxExc) {
+      throw new IllegalStateException("SaxException during module load.", saxExc);
+    } catch (IOException ioExc) {
+      throw new IllegalStateException("IoException during module load.", ioExc);
     }
     return modules;
   }

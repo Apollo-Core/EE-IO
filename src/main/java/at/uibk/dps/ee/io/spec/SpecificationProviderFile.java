@@ -128,7 +128,7 @@ public class SpecificationProviderFile implements SpecificationProvider {
    */
   protected Mapping<Task, Resource> createMapping(final Task task, final ResourceEntry resEntry,
       final ResourceGraph resGraph) {
-    Resource res = getResourceForResourceEntry(resGraph, resEntry);
+    final Resource res = getResourceForResourceEntry(resGraph, resEntry);
     if (resEntry.getType().equals(EnactmentMode.Local.name())) {
       return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Local,
           ConstantsEEModel.implIdLocalNative);

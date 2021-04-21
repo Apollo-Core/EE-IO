@@ -6,6 +6,11 @@ import org.opt4j.core.config.annotations.Order;
 import at.uibk.dps.ee.guice.modules.OutputModule;
 import ch.qos.logback.classic.util.ContextInitializer;
 
+/**
+ * Module to configure the location of the logback config file.
+ * 
+ * @author Fedor Smirnov
+ */
 public class LoggingModule extends OutputModule {
 
   @Order(1)
@@ -23,7 +28,7 @@ public class LoggingModule extends OutputModule {
     return pathToConfigFile;
   }
 
-  public void setPathToConfigFile(String pathToConfigFile) {
+  public void setPathToConfigFile(final String pathToConfigFile) {
     this.pathToConfigFile = pathToConfigFile;
   }
 }
