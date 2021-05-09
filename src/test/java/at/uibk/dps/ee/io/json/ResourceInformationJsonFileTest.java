@@ -16,7 +16,7 @@ public class ResourceInformationJsonFileTest {
 
 		FunctionTypeEntry entry = result.get(0);
 		assertEquals("addition", entry.getFunctionType());
-		assertEquals(2, entry.getResources().size());
+		assertEquals(3, entry.getResources().size());
 
 		ResourceEntry resEntry = entry.getResources().get(0);
 		assertEquals("Serverless", resEntry.getType());

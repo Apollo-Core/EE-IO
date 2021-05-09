@@ -12,6 +12,7 @@ import at.uibk.dps.ee.model.graph.ResourceGraphProvider;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUser;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
+import at.uibk.dps.ee.model.properties.PropertyServiceMappingLocal;
 import net.sf.opendse.model.Mapping;
 import net.sf.opendse.model.Mappings;
 import net.sf.opendse.model.Resource;
@@ -40,8 +41,8 @@ public class SpecificationProviderFileTest {
 
     Mappings<Task, Resource> result = tested.getMappings();
 
-    assertEquals(4, result.size());
-    assertEquals(2, result.get(t1).size());
+    assertEquals(5, result.size());
+    assertEquals(3, result.get(t1).size());
     assertEquals(2, result.get(t2).size());
     result.getAll().forEach(mapping -> checkMapping(mapping));
   }
@@ -49,6 +50,9 @@ public class SpecificationProviderFileTest {
   protected static void checkMapping(Mapping<Task, Resource> mapping) {
     EnactmentMode mode = PropertyServiceMapping.getEnactmentMode(mapping);
     assertTrue(mode.equals(EnactmentMode.Local) || mode.equals(EnactmentMode.Serverless));
+    if (mode.equals(EnactmentMode.Local)) {
+      assertNotNull(PropertyServiceMappingLocal.getImageName(mapping));
+    }
     String implId = PropertyServiceMapping.getImplementationId(mapping);
     assertNotNull(implId);
   }

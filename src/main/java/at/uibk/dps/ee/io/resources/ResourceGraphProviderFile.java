@@ -79,9 +79,6 @@ public class ResourceGraphProviderFile implements ResourceGraphProvider {
     Optional<Resource> newResourceOpt;
     if (resourceType.equals(EnactmentMode.Local)) {
       // nothing to do, EE already in the graph
-      if (!resEntry.getProperties().isEmpty()) {
-        throw new IllegalArgumentException("Entry of the EE resource should not have properties.");
-      }
       return;
     } else if (resourceType.equals(EnactmentMode.Serverless)) {
       final String uri =

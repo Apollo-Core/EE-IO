@@ -19,6 +19,7 @@ import at.uibk.dps.ee.model.graph.SpecificationProvider;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunction;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUser;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping;
+import at.uibk.dps.ee.model.properties.PropertyServiceMappingLocal;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
 import at.uibk.dps.ee.model.properties.PropertyServiceResourceServerless;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunction.UsageType;
@@ -130,8 +131,7 @@ public class SpecificationProviderFile implements SpecificationProvider {
       final ResourceGraph resGraph) {
     final Resource res = getResourceForResourceEntry(resGraph, resEntry);
     if (resEntry.getType().equals(EnactmentMode.Local.name())) {
-      return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Local,
-          ConstantsEEModel.implIdLocalNative);
+      return getLocalMappingEdge(task, res, resEntry);
     } else if (resEntry.getType().equals(EnactmentMode.Serverless.name())) {
       return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Serverless,
           PropertyServiceResourceServerless.getUri(res));
@@ -139,6 +139,26 @@ public class SpecificationProviderFile implements SpecificationProvider {
       throw new IllegalStateException(
           "Resource entry with unknown enactment mode: " + resEntry.getType());
     }
+  }
+
+  /**
+   * Creates and annotates the local mapping between the given task and the local
+   * resource.
+   * 
+   * @param task the mapped task
+   * @param local the local resource
+   * @param resEntry the resource entry
+   * @return the local mapping between the given task and the local resource
+   */
+  protected Mapping<Task, Resource> getLocalMappingEdge(Task task, Resource local,
+      ResourceEntry resEntry) {
+    if (!resEntry.getProperties().containsKey(PropertyServiceMappingLocal.propNameImage)) {
+      throw new IllegalArgumentException(
+          "Local resource entries must specify an image: " + resEntry);
+    }
+    final String imageName =
+        resEntry.getProperties().get(PropertyServiceMappingLocal.propNameImage).getAsString();
+    return PropertyServiceMappingLocal.createMappingLocal(task, local, imageName);
   }
 
   /**

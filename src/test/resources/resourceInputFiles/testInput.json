@@ -1,22 +1,50 @@
 [
-  {"functionType" : "addition",
-    "resources": [
-      {"type": "Serverless",
-        "properties": {"Uri": "www.blubb.us", "provider": "Amazon","region": "US", "memory": 100, "timeout": 20}
-      },
-      {"type": "Local",
-        "properties": {}
-      }
-      ]
-  },
-  {"functionType": "subtraction",
-    "resources": [
-      {"type": "Serverless",
-        "properties": {"Uri": "www.bla.com", "provider": "IBM","region": "Asia", "memory": 100, "timeout": 20}
-      },
-      {"type": "Local",
-        "properties": []
-      }
-      ]
-  }
+	{
+		"functionType": "addition",
+		"resources": [
+			{
+				"type": "Serverless",
+				"properties": {
+					"Uri": "www.blubb.us",
+					"provider": "Amazon",
+					"region": "US",
+					"memory": 100,
+					"timeout": 20
+				}
+			},
+			{
+				"type": "Local",
+				"properties": {
+					"Image": "myDhAccount/myDockerImageAddition"
+				}
+			},
+			{
+				"type": "Local",
+				"properties": {
+					"Image": "myDhAccount/myDockerImageAdditionOther"
+				}
+			}
+		]
+	},
+	{
+		"functionType": "subtraction",
+		"resources": [
+			{
+				"type": "Serverless",
+				"properties": {
+					"Uri": "www.bla.com",
+					"provider": "IBM",
+					"region": "Asia",
+					"memory": 100,
+					"timeout": 20
+				}
+			},
+			{
+				"type": "Local",
+				"properties": {
+					"Image": "myDhAccount/myDockerImageSubtraction"
+				}
+			}
+		]
+	}
 ]
