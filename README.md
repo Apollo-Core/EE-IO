@@ -15,11 +15,9 @@ This section describes the content and the format of the files which can be used
 
 The input data for processing is defined in JSON format.
 
-
 ### Workflow Definition
 
 The application workflow is defined with an AFCL file in YAML format.
-
 
 ### Function Type Mappings
 
@@ -27,8 +25,8 @@ The function type mapping file is defined in JSON format and describes the resou
 
 At the moment, Apollo supports following resource types:
 
-+ Serverless functions deployed by cloud providers (e.g., AWS Lambda or IBM Actions)
-+ Local execution (execution on the machine running corresponding Apollo instance) using Docker containers, provided via DockerHub.
++   Serverless functions deployed by cloud providers (e.g., AWS Lambda or IBM Actions)
++   Local execution (execution on the machine running corresponding Apollo instance) using Docker containers, provided via DockerHub.
 
 #### Type Mapping Examples
 

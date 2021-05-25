@@ -116,7 +116,7 @@ public class EeStarter extends Starter {
     final ModuleLoader loader = new ModuleLoader(new ModuleRegister(new ModuleAutoFinder()));
     final Set<Module> modules = new HashSet<>();
     modules.addAll(loader.load(configFile));
-    modules.removeIf(module -> (module instanceof VisualizationModule));
+    modules.removeIf(module -> module instanceof VisualizationModule);
     return modules;
   }
 }

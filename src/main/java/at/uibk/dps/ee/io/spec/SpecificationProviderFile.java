@@ -150,8 +150,8 @@ public class SpecificationProviderFile implements SpecificationProvider {
    * @param resEntry the resource entry
    * @return the local mapping between the given task and the local resource
    */
-  protected Mapping<Task, Resource> getLocalMappingEdge(Task task, Resource local,
-      ResourceEntry resEntry) {
+  protected Mapping<Task, Resource> getLocalMappingEdge(final Task task, final Resource local,
+      final ResourceEntry resEntry) {
     if (!resEntry.getProperties().containsKey(PropertyServiceMappingLocal.propNameImage)) {
       throw new IllegalArgumentException(
           "Local resource entries must specify an image: " + resEntry);
