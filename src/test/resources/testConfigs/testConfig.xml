@@ -1,0 +1,10 @@
+<configuration>
+  <module class="at.uibk.dps.ee.io.modules.InputReaderFileModule">
+    <property name="filePath">./inputData/sixAtomic.json</property>
+  </module>
+  <module class="at.uibk.dps.ee.io.modules.OutputPrinterModule"/>
+  <module class="at.uibk.dps.ee.io.modules.SpecificationInputModule">
+    <property name="filePathAfcl">./demoWfs/sixAtomics.yaml</property>
+    <property name="filePathMappingFile">./typeMappings/sixAtomics.json</property>
+  </module>
+</configuration>

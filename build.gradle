@@ -36,7 +36,7 @@ dependencies {
   }else {
     implementation 'com.github.Apollo-Core:EE-Core:master-SNAPSHOT'
     implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
-    implementation 'com.github.Apollo-Core:EE-Model:main-SNAPSHOT'
+    implementation 'com.github.Apollo-Core:EE-Model:localContainer-SNAPSHOT'
   }
 
   implementation 'com.github.ApolloCEC:socketUtils:-SNAPSHOT'
@@ -51,7 +51,8 @@ dependencies {
   implementation 'com.google.code.gson:gson:2.8.6'
 
   // dependency to Opt4J
-  implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
+  //implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
+  implementation 'com.github.FedorSmirnov89:opt4j:2ad9d51292'
   // dependency to opendse
   implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
 
