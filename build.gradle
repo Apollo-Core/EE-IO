@@ -52,7 +52,7 @@ dependencies {
 
   // dependency to Opt4J
   //implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
-  implementation 'com.github.FedorSmirnov89:opt4j:2ad9d51292'
+  implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
   // dependency to opendse
   implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
 
