@@ -25,8 +25,9 @@ The function type mapping file is defined in JSON format and describes the resou
 
 At the moment, Apollo supports following resource types:
 
-+   Serverless functions deployed by cloud providers (e.g., AWS Lambda or IBM Actions)
-+   Local execution (execution on the machine running corresponding Apollo instance) using Docker containers, provided via DockerHub.
++   **Serverless:** Serverless functions deployed by cloud providers (e.g., AWS Lambda or IBM Actions)
++   **Local Container:** Local execution (execution on the machine running corresponding Apollo instance) using Docker containers, provided via DockerHub. With these resources, a single task is processed by (I) starting the container, (II) executing the functions with the task input, and (III) removing the container. The images of all local-container resources are pulled during Apollo's configuration phase.
++   **Local Server:** Local execution (execution on the machine running corresponding Apollo instance) using Docker containers, provided via DockerHub. In this case, the Docker image contains a server with a Rest API which can be directly used to execute the corresponding function. The server is started up during the configuration phase of Apollo and is then accessible via HTTP requests.
 
 #### Type Mapping Examples
 
