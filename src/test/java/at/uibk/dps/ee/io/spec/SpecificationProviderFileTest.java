@@ -3,7 +3,7 @@ package at.uibk.dps.ee.io.spec;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+import at.uibk.dps.ee.core.ContainerManager;
 import at.uibk.dps.ee.io.resources.ResourceGraphProviderFile;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
@@ -34,10 +34,12 @@ public class SpecificationProviderFileTest {
     EnactmentGraphProvider eProvider = mock(EnactmentGraphProvider.class);
     when(eProvider.getEnactmentGraph()).thenReturn(eGraph);
 
+    ContainerManager mockManager = mock(ContainerManager.class);
+
     String filePath = ConstantsTestCoreEEiO.resourceTestInputPath;
     ResourceGraphProvider rProvider = new ResourceGraphProviderFile(filePath);
     SpecificationProviderFile tested =
-        new SpecificationProviderFile(eProvider, rProvider, filePath);
+        new SpecificationProviderFile(eProvider, rProvider, filePath, mockManager);
 
     Mappings<Task, Resource> result = tested.getMappings();
 

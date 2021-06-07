@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.opt4j.core.start.Constant;
 import com.google.inject.Inject;
-
+import at.uibk.dps.ee.core.ContainerManager;
 import at.uibk.dps.ee.io.json.ResourceEntry;
 import at.uibk.dps.ee.io.json.ResourceInformationJsonFile;
 import at.uibk.dps.ee.io.resources.ResourceGraphProviderFile;
@@ -44,6 +44,8 @@ public class SpecificationProviderFile implements SpecificationProvider {
   protected final Mappings<Task, Resource> mappings;
   protected final EnactmentSpecification specification;
 
+  protected final ContainerManager containerManager;
+
   /**
    * Injection constructor.
    * 
@@ -54,8 +56,11 @@ public class SpecificationProviderFile implements SpecificationProvider {
    */
   @Inject
   public SpecificationProviderFile(final EnactmentGraphProvider enactmentGraphProvider,
-      final ResourceGraphProvider resourceGraphProvider, @Constant(value = "filePath",
-          namespace = ResourceGraphProviderFile.class) final String filePath) {
+      final ResourceGraphProvider resourceGraphProvider,
+      @Constant(value = "filePath",
+          namespace = ResourceGraphProviderFile.class) final String filePath,
+      final ContainerManager containerManager) {
+    this.containerManager = containerManager;
     this.enactmentGraphProvider = enactmentGraphProvider;
     this.resourceGraphProvider = resourceGraphProvider;
     this.mappings = createMappings(getEnactmentGraph(), getResourceGraph(), filePath);
@@ -158,6 +163,9 @@ public class SpecificationProviderFile implements SpecificationProvider {
     }
     final String imageName =
         resEntry.getProperties().get(PropertyServiceMappingLocal.propNameImage).getAsString();
+    // initialize the local container
+    containerManager.initImage(imageName);
+    // create the mapping edge for the spec
     return PropertyServiceMappingLocal.createMappingLocal(task, local, imageName);
   }
 
