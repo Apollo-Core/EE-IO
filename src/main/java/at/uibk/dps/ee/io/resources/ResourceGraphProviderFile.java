@@ -57,7 +57,7 @@ public class ResourceGraphProviderFile implements ResourceGraphProvider {
         ResourceInformationJsonFile.readFromFile(filePath);
     // always add a node representing the EE
     final Resource eeRes = PropertyServiceResource.createResource(ConstantsEEModel.idLocalResource);
-    
+
     result.addVertex(eeRes);
     resourceInformation.stream()
         .flatMap(functionTypeEntry -> functionTypeEntry.getResources().stream())
@@ -77,7 +77,7 @@ public class ResourceGraphProviderFile implements ResourceGraphProvider {
       final ResourceEntry resEntry) {
     final EnactmentMode resourceType = EnactmentMode.valueOf(resEntry.getType());
     Optional<Resource> newResourceOpt;
-    if (resourceType.equals(EnactmentMode.Local)) {
+    if (resourceType.equals(EnactmentMode.Local) || resourceType.equals(EnactmentMode.Demo)) {
       // nothing to do, EE already in the graph
       return;
     } else if (resourceType.equals(EnactmentMode.Serverless)) {

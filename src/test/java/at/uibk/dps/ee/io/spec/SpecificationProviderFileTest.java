@@ -43,15 +43,16 @@ public class SpecificationProviderFileTest {
 
     Mappings<Task, Resource> result = tested.getMappings();
 
-    assertEquals(5, result.size());
-    assertEquals(3, result.get(t1).size());
+    assertEquals(6, result.size());
+    assertEquals(4, result.get(t1).size());
     assertEquals(2, result.get(t2).size());
     result.getAll().forEach(mapping -> checkMapping(mapping));
   }
 
   protected static void checkMapping(Mapping<Task, Resource> mapping) {
     EnactmentMode mode = PropertyServiceMapping.getEnactmentMode(mapping);
-    assertTrue(mode.equals(EnactmentMode.Local) || mode.equals(EnactmentMode.Serverless));
+    assertTrue(mode.equals(EnactmentMode.Local) || mode.equals(EnactmentMode.Serverless)
+        || mode.equals(EnactmentMode.Demo));
     if (mode.equals(EnactmentMode.Local)) {
       assertNotNull(PropertyServiceMappingLocal.getImageName(mapping));
     }

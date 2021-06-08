@@ -135,11 +135,14 @@ public class SpecificationProviderFile implements SpecificationProvider {
   protected Mapping<Task, Resource> createMapping(final Task task, final ResourceEntry resEntry,
       final ResourceGraph resGraph) {
     final Resource res = getResourceForResourceEntry(resGraph, resEntry);
-    if (resEntry.getType().equals(EnactmentMode.Local.name())) {
+    final String resType = resEntry.getType();
+    if (resType.equals(EnactmentMode.Local.name())) {
       return getLocalMappingEdge(task, res, resEntry);
-    } else if (resEntry.getType().equals(EnactmentMode.Serverless.name())) {
+    } else if (resType.equals(EnactmentMode.Serverless.name())) {
       return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Serverless,
           PropertyServiceResourceServerless.getUri(res));
+    } else if (resType.equals(EnactmentMode.Demo.name())) {
+      return PropertyServiceMapping.createMapping(task, res, EnactmentMode.Demo, "demo");
     } else {
       throw new IllegalStateException(
           "Resource entry with unknown enactment mode: " + resEntry.getType());
@@ -179,10 +182,11 @@ public class SpecificationProviderFile implements SpecificationProvider {
   protected Resource getResourceForResourceEntry(final ResourceGraph rGraph,
       final ResourceEntry resEntry) {
     Optional<Resource> result;
-    if (resEntry.getType().equals(EnactmentMode.Local.name())) {
+    final String resType = resEntry.getType();
+    if (resType.equals(EnactmentMode.Local.name()) || resType.equals(EnactmentMode.Demo.name())) {
       // Resource is local EE
       result = Optional.ofNullable(rGraph.getVertex(ConstantsEEModel.idLocalResource));
-    } else if (resEntry.getType().equals(EnactmentMode.Serverless.name())) {
+    } else if (resType.equals(EnactmentMode.Serverless.name())) {
       // Serverless resource => look for the Uri
       if (!resEntry.getProperties().containsKey(PropertyServiceResourceServerless.propNameUri)) {
         throw new IllegalArgumentException("No Uri annotated for serverless resource");

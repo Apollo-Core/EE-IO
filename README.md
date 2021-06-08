@@ -31,7 +31,7 @@ At the moment, Apollo supports following resource types:
 
 #### Type Mapping Examples
 
-The following example defines two possible type mappings for functions of the type _Addition_: (a) A serverless functions which is accessible under the link FUNCTION_LINK and (b) a function executed in a local container with the image IMAGE_NAME. 
+The following example defines three possible type mappings for functions of the type _Addition_: (a) A serverless functions which is accessible under the link FUNCTION_LINK, (b) a function executed in a local container with the image IMAGE_NAME, (c) a function implemented within Apollo's source code (this is used exclusively to enable a demonstration of Apollo which relies neither on Docker containers nor on the deployment of serverless functions). 
 
 ```json
 [
@@ -48,6 +48,11 @@ The following example defines two possible type mappings for functions of the ty
 				"type": "Local",
 				"properties": {
 					"Image": "IMAGE_NAME"
+				}
+			},
+			{
+				"type": "Demo",
+				"properties": {					
 				}
 			}
 		]

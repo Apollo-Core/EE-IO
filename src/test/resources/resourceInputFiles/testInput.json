@@ -23,6 +23,11 @@
 				"properties": {
 					"Image": "myDhAccount/myDockerImageAdditionOther"
 				}
+			},
+			{
+				"type": "Demo",
+				"properties": {					
+				}
 			}
 		]
 	},
