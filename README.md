@@ -7,6 +7,22 @@
 # EE-IO
 Project defining the components for the IO, i.e., the processing of workflow and data input and the output of the processing results, of the Apollo-Core Enactment Engine.
 
+## Relations to other parts of Apollo-Core
+
+### Depends On
++ EE-Core
++ EE-Guice
++ EE-Model
+
+### Used By
++ EE-Visualization
++ EE-Demo
++ EE-Deploy
+
+### Relevant For
++ Defining the syntax of the input files
++ Creation of the Enactment Graph used as Apollo's system model
+
 ## Input Files
 
 This section describes the content and the format of the files which can be used with the Apollo run-time system.
