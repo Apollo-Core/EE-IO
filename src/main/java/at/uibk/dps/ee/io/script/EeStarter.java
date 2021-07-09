@@ -8,7 +8,6 @@ import org.opt4j.core.config.ModuleRegister;
 import org.opt4j.core.config.Starter;
 import org.opt4j.core.config.Task;
 import com.google.inject.Module;
-import at.uibk.dps.ee.core.exception.FailureException;
 import at.uibk.dps.ee.guice.modules.InputModule;
 import at.uibk.dps.ee.guice.modules.VisualizationModule;
 import at.uibk.dps.ee.guice.starter.EeTask;
@@ -30,13 +29,13 @@ public class EeStarter extends Starter {
    * @param args the arguments to start the task
    * @throws FailureException the failure exception which can be thrown by the EE
    */
-  public static void main(final String[] args) throws FailureException {
+  public static void main(final String[] args) {
     final EeStarter starter = new EeStarter();
     starter.execute(args);
   }
 
   @Override
-  public void execute(final String[] args) throws FailureException {
+  public void execute(final String[] args) {
     try {
       if (args.length == 1) {
         // all information within one config file
@@ -49,8 +48,6 @@ public class EeStarter extends Starter {
       else {
         throw new IllegalArgumentException("Wrong arguments provided for the EE script.");
       }
-    } catch (FailureException failureExc) {
-      throw (FailureException) failureExc;
     } catch (Exception exception) {
       throw new RuntimeException(exception);
     }
