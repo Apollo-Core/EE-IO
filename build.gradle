@@ -57,8 +57,13 @@ dependencies {
   implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
 
   // test dependencies
-  testCompile group: 'junit', 		name: 'junit', 					version: '4.+'
+  testImplementation(platform('org.junit:junit-bom:5.7.2'))
+  testImplementation('org.junit.jupiter:junit-jupiter')
   testCompile group: 'org.mockito',     name: 'mockito-core',     version: '3.4.4'
+}
+
+test {
+  useJUnitPlatform()
 }
 
 jacocoTestReport {

@@ -1,8 +1,7 @@
 package at.uibk.dps.ee.io.spec;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
 import at.uibk.dps.ee.io.resources.ResourceGraphProviderFile;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
@@ -20,6 +19,7 @@ import net.sf.opendse.model.Task;
 import static org.mockito.Mockito.mock;
 
 import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
 
 public class SpecificationProviderFileTest {
 

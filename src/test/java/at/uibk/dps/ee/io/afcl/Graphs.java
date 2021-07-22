@@ -1,7 +1,7 @@
 package at.uibk.dps.ee.io.afcl;
 
-import static org.junit.Assert.fail;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 
 import at.uibk.dps.afcl.Workflow;
@@ -16,53 +16,52 @@ import at.uibk.dps.socketutils.UtilsSocket;
  */
 public class Graphs {
 
-	private Graphs() {
-	}
+  private Graphs() {}
 
-	public static Workflow getSingleAtomicWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileSingleAtomic);
-	}
-
-	public static Workflow getIfWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileIf);
-	}
-	
-	public static Workflow getIfWfMulti() {
-      return getWf(ConstantsTestCoreEEiO.cfclFileIfMulti);
-  }
-	
-	public static Workflow getIfNoElseWf() {
-      return getWf(ConstantsTestCoreEEiO.cfclFileIfNoElse);
+  public static Workflow getSingleAtomicWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileSingleAtomic);
   }
 
-	public static Workflow getElementIndexWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileElementIndex);
-	}
+  public static Workflow getIfWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileIf);
+  }
 
-	public static Workflow getParallelForWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileParallelFor);
-	}
+  public static Workflow getIfWfMulti() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileIfMulti);
+  }
 
-	public static Workflow getParallelForComplexWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileParallelForConstIterator);
-	}
-	
-	public static Workflow getParallelForIntIteratorWf() {
-		return getWf(ConstantsTestCoreEEiO.cfclFileParallelForIntIterator);
-	}
-	
-	public static Workflow getParallelForNoInput() {
-	  return getWf(ConstantsTestCoreEEiO.cfclFileParallelForNoInput);
-	}
+  public static Workflow getIfNoElseWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileIfNoElse);
+  }
 
-	protected static Workflow getWf(String fileName) {
-		try {
-			byte[] data = UtilsSocket.readFileToBytes(fileName);
-			return AfclReader.bytes2Workflow(data);
-		} catch (IOException ioExc) {
-			fail("IOException when getting the SeqPar workflow");
-			return null;
-		}
-	}
+  public static Workflow getElementIndexWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileElementIndex);
+  }
+
+  public static Workflow getParallelForWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileParallelFor);
+  }
+
+  public static Workflow getParallelForComplexWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileParallelForConstIterator);
+  }
+
+  public static Workflow getParallelForIntIteratorWf() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileParallelForIntIterator);
+  }
+
+  public static Workflow getParallelForNoInput() {
+    return getWf(ConstantsTestCoreEEiO.cfclFileParallelForNoInput);
+  }
+
+  protected static Workflow getWf(String fileName) {
+    try {
+      byte[] data = UtilsSocket.readFileToBytes(fileName);
+      return AfclReader.bytes2Workflow(data);
+    } catch (IOException ioExc) {
+      fail("IOException when getting the SeqPar workflow");
+      return null;
+    }
+  }
 
 }

@@ -1,15 +1,13 @@
 package at.uibk.dps.ee.io.afcl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
@@ -31,9 +29,11 @@ public class UtilsAfclTest {
     assertEquals(expected, UtilsAfcl.getDataNodeId(producerId, dataId));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetDataTypeForStringWrongInput() {
-    UtilsAfcl.getDataTypeForString("unknown");
+    assertThrows(IllegalArgumentException.class, () -> {
+      UtilsAfcl.getDataTypeForString("unknown");
+    });
   }
 
   @Test
@@ -46,11 +46,13 @@ public class UtilsAfclTest {
     assertEquals(DataType.Boolean, UtilsAfcl.getDataTypeForString(ConstantsAfcl.typeStringBoolean));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetCompoundTypeUnknown() {
-    Function input = mock(Function.class);
-    when(input.getName()).thenReturn("name");
-    UtilsAfcl.getCompoundType(input);
+    assertThrows(IllegalArgumentException.class, () -> {
+      Function input = mock(Function.class);
+      when(input.getName()).thenReturn("name");
+      UtilsAfcl.getCompoundType(input);
+    });
   }
 
   @Test

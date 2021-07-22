@@ -1,10 +1,10 @@
 package at.uibk.dps.ee.io.afcl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.constants.ConstantsEEModel;

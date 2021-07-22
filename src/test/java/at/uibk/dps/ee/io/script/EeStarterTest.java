@@ -1,8 +1,8 @@
 package at.uibk.dps.ee.io.script;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import com.google.inject.Module;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 
