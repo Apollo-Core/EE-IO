@@ -3,6 +3,7 @@ package at.uibk.dps.ee.io.afcl;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.functions.objects.DataIns;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
@@ -38,7 +39,9 @@ public class AfclCompoundsTest {
     assertEquals(func, function);
 
     assertEquals(dataInName, PropertyServiceDependency.getJsonKey(dep));
-    assertEquals(funcName + ConstantsAfcl.SourceAffix + dataInName, data.getId());
+    assertEquals(
+        funcName + ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + dataInName,
+        data.getId());
     assertEquals(NodeType.Constant, PropertyServiceData.getNodeType(data));
     assertEquals(DataType.Number, PropertyServiceData.getDataType(data));
     assertEquals(5, PropertyServiceData.getContent(data).getAsInt());

@@ -5,6 +5,7 @@ import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
+import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
 import at.uibk.dps.ee.model.objects.Condition.CombinedWith;
 import at.uibk.dps.ee.model.objects.Condition.Operator;
@@ -31,7 +32,7 @@ public final class UtilsAfcl {
    *
    */
   public enum CompoundType {
-    Atomic, If, ParallelFor
+    Atomic, If, ParallelFor, While
   }
 
   /**
@@ -85,6 +86,8 @@ public final class UtilsAfcl {
       return CompoundType.If;
     } else if (function instanceof ParallelFor) {
       return CompoundType.ParallelFor;
+    } else if (function instanceof While) {
+      return CompoundType.While;
     } else {
       throw new IllegalArgumentException(
           "The function " + function.getName() + " is a compound of an unknown type.");

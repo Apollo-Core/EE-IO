@@ -33,6 +33,8 @@ public class ConstantsTestCoreEEiO {
       "src/test/resources/wfInputFiles/parForIntIterator.yaml";
   public static final String cfclFileParallelForNoInput =
       "src/test/resources/wfInputFiles/parForNoInput.yaml";
+  public static final String afclFileWhile = "src/test/resources/wfInputFiles/while.yaml";
+  public static final String afclFileWhileNum = "src/test/resources/wfInputFiles/whileNum.yaml";
 
   // single atomic names
   public static final String wfNameAtomic = "single Atomic";

@@ -42,7 +42,7 @@ dependencies {
   implementation 'com.github.ApolloCEC:socketUtils:-SNAPSHOT'
 
   // dependencies to projects from other parts of Apollo
-  implementation 'com.github.Apollo-AFCL:AFCLCore-AFCLv1.1:master-SNAPSHOT'
+  implementation 'com.github.Apollo-AFCL:AFCLCore-AFCLv1.1:seqFor-SNAPSHOT'
 
   // SLF4J and Logback for logging
   implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"

@@ -1,0 +1,46 @@
+---
+name: "single Atomic"
+dataIns:
+  - name: "wf_coll"
+    type: "collection"
+    source: "inputSource"
+workflowBody:
+  - while:
+      name: "while"
+      dataIns:
+        - name: "sum"
+          type: "number"
+          source: 0            
+      loopBody:
+        - function:
+            name: "sumUpFunction"
+            type: "addition"
+            dataIns:
+            - name: "parallel_coll"
+              type: "collection"
+              source: "single Atomic/wf_coll"
+              constraints:
+                - name: "elementIndex"
+                  value: "while/counter"
+            - name: "sum"
+              type: "number"
+              source: "while/sum"            
+            dataOuts: 
+            - name: "sum"
+              type: "number"
+      condition:
+        - data1: "while/counter"
+          data2: "single Atomic/wf_coll"
+          type: "number"
+          operator: "<"
+          negation: "false"
+          combinedWith: "and"                    
+      dataOuts:
+        - name: "sum"
+          type: "number"
+          source: "sumUpFunction/sum" 
+dataOuts:
+  - name: "overallOutput"
+    type: "number"
+    source: "while/sum"
+

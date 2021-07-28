@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.JsonPrimitive;
 
-import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;
-import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
@@ -76,7 +74,7 @@ public final class AfclCompoundsParallelFor {
 
       // make the loop body while remembering new nodes
       final Set<Task> functionsBeforeAdding = AfclCompounds.getFunctionNodes(graph);
-      processTheLoopBody(parallelFor, graph, workflow);
+      AfclCompounds.processTheLoopBody(parallelFor, graph, workflow);
       final Set<Task> functionsAfterAdding = AfclCompounds.getFunctionNodes(graph);
       functionsAfterAdding.removeAll(functionsBeforeAdding);
       // connect all functions to the loop output
@@ -90,7 +88,7 @@ public final class AfclCompoundsParallelFor {
       }
       // process the loop body and remember the new functions
       final Set<Task> functionsBeforeAdding = AfclCompounds.getFunctionNodes(graph);
-      processTheLoopBody(parallelFor, graph, workflow);
+      AfclCompounds.processTheLoopBody(parallelFor, graph, workflow);
       final Set<Task> functionsAfterAdding = AfclCompounds.getFunctionNodes(graph);
       functionsAfterAdding.removeAll(functionsBeforeAdding);
       // connect the "roots" of the body subgraph to the dist node
@@ -175,25 +173,6 @@ public final class AfclCompoundsParallelFor {
       }
     }
     return true;
-  }
-
-  /**
-   * Processes the loop body and adds all nodes.
-   * 
-   * @param parallelFor the parallelFor compound
-   * @param graph the enactment graph
-   * @param workflow the workflow
-   */
-  protected static void processTheLoopBody(final ParallelFor parallelFor,
-      final EnactmentGraph graph, final Workflow workflow) {
-    // process the loop body
-    for (final Function function : parallelFor.getLoopBody()) {
-      if (function instanceof AtomicFunction) {
-        AfclCompoundsAtomic.addAtomicFunctionSubWfLevel(graph, (AtomicFunction) function, workflow);
-      } else {
-        AfclCompounds.addFunctionCompound(graph, function, workflow);
-      }
-    }
   }
 
   /**

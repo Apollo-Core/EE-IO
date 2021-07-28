@@ -8,6 +8,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
@@ -73,7 +74,8 @@ public class SingleAtomicAfclTest {
     assertEquals(DataType.Number, PropertyServiceData.getDataType(actualRoot));
 
     assertFalse(PropertyServiceData.isRoot(constantData));
-    assertEquals(UtilsAfcl.getDataNodeId(ConstantsTestCoreEEiO.wfFunctionNameAtomic,
+    assertEquals(UtilsAfcl.getDataNodeId(
+        ConstantsTestCoreEEiO.wfFunctionNameAtomic + ConstantsEEModel.ConstantNodeAffix,
         ConstantsTestCoreEEiO.wfFunctionConstantInputNameAtomic), constantData.getId());
     assertEquals(DataType.Number, PropertyServiceData.getDataType(constantData));
     assertEquals(ConstantsTestCoreEEiO.wfSingleAtomicConstant,

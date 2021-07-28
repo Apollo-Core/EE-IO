@@ -5,6 +5,8 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
+import at.uibk.dps.afcl.functions.While;
+import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOutsAtomic;
 
 /**
@@ -46,10 +48,38 @@ public final class HierarchyLevellingAfcl {
     } else if (function instanceof ParallelFor) {
       final ParallelFor parFor = (ParallelFor) function;
       return getSrcDataIdParallelFor(parFor, afclSource, dataName, workflow);
+    } else if (function instanceof While) {
+      return getDataIdWhile(afclSource, dataName, (While) function, workflow);
     } else {
       throw new IllegalStateException(
           "Not yet implemented for " + function.getClass().getCanonicalName());
     }
+  }
+
+  /**
+   * Returns the id of the correct data node described by the given src string
+   * (pointing to a while compound).
+   * 
+   * @param afclSource the src string
+   * @param dataName the data id
+   * @param whileCompound the while compound
+   * @param workflow the whole workflow
+   * @return id of the correct data node described by the given src string
+   *         (pointing to a while compound)
+   */
+  protected static String getDataIdWhile(final String afclSource, String dataName,
+      While whileCompound, Workflow workflow) {
+    for (DataIns dataIn : whileCompound.getDataIns()) {
+      if (dataIn.getName().equals(dataName)) {
+        String srcString = dataIn.getSource();
+        if (!UtilsAfcl.isSrcString(srcString)) {
+          return srcString;
+        } else {
+          return getSrcDataId(dataIn.getSource(), workflow);
+        }
+      }
+    }
+    return afclSource;
   }
 
   /**

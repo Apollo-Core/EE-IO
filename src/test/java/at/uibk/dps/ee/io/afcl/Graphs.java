@@ -53,6 +53,14 @@ public class Graphs {
   public static Workflow getParallelForNoInput() {
     return getWf(ConstantsTestCoreEEiO.cfclFileParallelForNoInput);
   }
+  
+  public static Workflow getWhile() {
+    return getWf(ConstantsTestCoreEEiO.afclFileWhile);
+  }
+  
+  public static Workflow getWhileNum() {
+    return getWf(ConstantsTestCoreEEiO.afclFileWhileNum);
+  }
 
   protected static Workflow getWf(String fileName) {
     try {

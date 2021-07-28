@@ -10,8 +10,11 @@ import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.IfThenElse;
+import at.uibk.dps.afcl.functions.LoopCompound;
 import at.uibk.dps.afcl.functions.ParallelFor;
+import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
@@ -56,9 +59,32 @@ public final class AfclCompounds {
         AfclCompoundsParallelFor.addParallelFor(graph, (ParallelFor) function, workflow);
         break;
       }
+      case While: {
+        AfclCompoundsWhile.addWhile(graph, (While) function, workflow);
+        break;
+      }
       default:
         throw new IllegalArgumentException(
             "Unexpected value: " + UtilsAfcl.getCompoundType(function));
+    }
+  }
+
+  /**
+   * Processes the loop body and adds all nodes.
+   * 
+   * @param loopCompound the loop compound
+   * @param graph the enactment graph
+   * @param workflow the workflow
+   */
+  protected static void processTheLoopBody(final LoopCompound loopCompound,
+      final EnactmentGraph graph, final Workflow workflow) {
+    // process the loop body
+    for (final Function function : loopCompound.getLoopBody()) {
+      if (function instanceof AtomicFunction) {
+        AfclCompoundsAtomic.addAtomicFunctionSubWfLevel(graph, (AtomicFunction) function, workflow);
+      } else {
+        addFunctionCompound(graph, function, workflow);
+      }
     }
   }
 
@@ -108,11 +134,11 @@ public final class AfclCompounds {
   protected static void addDataInConstant(final EnactmentGraph graph, final Task function,
       final DataIns dataIn, final DataType expectedType) {
     final String jsonKey = AfclApiWrapper.getName(dataIn);
-    final String dataNodeId = function.getId() + ConstantsAfcl.SourceAffix + jsonKey;
     final DataType dataType = UtilsAfcl.getDataTypeForString(dataIn.getType());
     final String jsonString = AfclApiWrapper.getSource(dataIn);
     final JsonElement content = JsonParser.parseString(jsonString);
-
+    final String dataNodeId = function.getId() + 
+        ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonKey;
     final Task constantDataNode =
         PropertyServiceData.createConstantNode(dataNodeId, dataType, content);
     PropertyServiceDependency.addDataDependency(constantDataNode, function, jsonKey, graph);

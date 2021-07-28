@@ -1,0 +1,43 @@
+---
+name: "single Atomic"
+dataIns:
+  - name: "input"
+    type: "number"
+    source: "inputSource"
+workflowBody:
+  - while:
+      name: "sequentialFor"
+      dataIns:
+        - name: "sum"
+          type: "number"
+          source: "single Atomic/input"            
+      loopBody:
+        - function:
+            name: "increment"
+            type: "addition"
+            dataIns:
+            - name: "sum"
+              type: "number"
+              source: "sequentialFor/sum"
+            - name: "added"
+              type: "number"
+              source: 1            
+            dataOuts: 
+            - name: "sum"
+              type: "number"   
+      condition:
+        - data1: "sequentialFor/counter"
+          data2: 5
+          type: "number"
+          operator: "<"
+          negation: "false"
+          combinedWith: "and"                 
+      dataOuts:
+        - name: "sum"
+          type: "number"
+          source: "sumUpFunction/sum" 
+dataOuts:
+  - name: "overallOutput"
+    type: "number"
+    source: "sequentialFor/sum"
+
