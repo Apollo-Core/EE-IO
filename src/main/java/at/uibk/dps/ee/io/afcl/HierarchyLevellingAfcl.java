@@ -8,6 +8,7 @@ import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOutsAtomic;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 
 /**
  * Static method container with methods used to flatten AFCL's compound
@@ -69,6 +70,9 @@ public final class HierarchyLevellingAfcl {
    */
   protected static String getDataIdWhile(final String afclSource, String dataName,
       While whileCompound, Workflow workflow) {
+    if (dataName.equals(ConstantsEEModel.WhileLoopCounterSuffix)) {
+      return afclSource;
+    }
     for (DataIns dataIn : whileCompound.getDataIns()) {
       if (dataIn.getName().equals(dataName)) {
         String srcString = dataIn.getSource();

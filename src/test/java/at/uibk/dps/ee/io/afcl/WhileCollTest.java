@@ -7,7 +7,7 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import net.sf.opendse.model.properties.TaskPropertyService;
 
-class WhileNumTest {
+class WhileCollTest {
 
   EnactmentGraph result;
 
@@ -25,16 +25,16 @@ class WhileNumTest {
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
 
-    assertEquals(3, numFunc);
+    assertEquals(4, numFunc);
     assertEquals(8, numData);
-    assertEquals(12, edgeNum);
+    assertEquals(16, edgeNum);
   }
 
 
   @BeforeEach
   void setup() {
     // read in the graph
-    Workflow whileWf = Graphs.getWhileNum();
+    Workflow whileWf = Graphs.getWhileColl();
     result = GraphGenerationAfcl.generateEnactmentGraph(whileWf);
   }
 }

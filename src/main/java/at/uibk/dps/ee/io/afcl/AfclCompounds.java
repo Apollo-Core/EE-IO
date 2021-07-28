@@ -137,8 +137,8 @@ public final class AfclCompounds {
     final DataType dataType = UtilsAfcl.getDataTypeForString(dataIn.getType());
     final String jsonString = AfclApiWrapper.getSource(dataIn);
     final JsonElement content = JsonParser.parseString(jsonString);
-    final String dataNodeId = function.getId() + 
-        ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonKey;
+    final String dataNodeId =
+        function.getId() + ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonKey;
     final Task constantDataNode =
         PropertyServiceData.createConstantNode(dataNodeId, dataType, content);
     PropertyServiceDependency.addDataDependency(constantDataNode, function, jsonKey, graph);
@@ -192,9 +192,14 @@ public final class AfclCompounds {
       result = new Communication(dataNodeId);
       PropertyServiceData.setDataType(result, dataType);
     } else {
-      if (!PropertyServiceData.getDataType(result).equals(dataType)) {
-        throw new IllegalStateException("The type specified by node " + dataNodeId
-            + " does not match the type expected by a requestor/producer");
+      DataType actual = PropertyServiceData.getDataType(result);
+      if (!actual.equals(dataType)) {
+        if (actual.equals(DataType.Collection) && dataType.equals(DataType.Number)) {
+          return result;
+        } else {
+          throw new IllegalStateException("The type specified by node " + dataNodeId
+              + " does not match the type expected by a requestor/producer");
+        }
       }
     }
     return result;

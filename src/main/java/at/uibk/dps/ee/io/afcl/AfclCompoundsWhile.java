@@ -43,20 +43,21 @@ public final class AfclCompoundsWhile {
     // create the data node representing the while start
     Task whileStart = PropertyServiceData.createWhileStart(whileCompound.getName());
     graph.addVertex(whileStart);
+    // create the data node representing the loop counter
+    Task loopCounter =
+        PropertyServiceData.createConstantNode(whileCompound.getName() + ConstantsAfcl.SourceAffix
+            + ConstantsEEModel.WhileLoopCounterSuffix, DataType.Number, new JsonPrimitive(0));
+    graph.addVertex(loopCounter);
     // create the contents of the loop body
     Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
     AfclCompounds.processTheLoopBody(whileCompound, graph, workflow);
+    // create the condition
+    Task stopDecision = createCondition(graph, whileCompound, workflow);
     Set<Task> loopBodyFunctions = AfclCompounds.getFunctionNodes(graph);
     loopBodyFunctions.removeAll(beforeAddingLoopBody);
     // connect the functions to the while start
     loopBodyFunctions.forEach(bodyFunction -> PropertyServiceDependency
         .addDataDependency(whileStart, bodyFunction, ConstantsEEModel.JsonKeyWhileStart, graph));
-    // create the condition
-    Task stopDecision = createCondition(graph, whileCompound, workflow);
-    // create the data node representing the loop counter
-    Task loopCounter = PropertyServiceData.createConstantNode(whileCompound.getName()
-        + ConstantsAfcl.SourceAffix + ConstantsEEModel.WhileLoopCounterSuffix,
-        DataType.Number, new JsonPrimitive(0));
     // create the node representing the end of the while compound/iteration
     Task whileEnd = PropertyServiceFunctionUtilityWhile.createWhileEndTask(whileStart);
     // connect the condition node and the loop counter to the while end
