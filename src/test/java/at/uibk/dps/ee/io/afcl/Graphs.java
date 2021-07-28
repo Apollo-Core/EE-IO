@@ -61,6 +61,10 @@ public class Graphs {
   public static Workflow getWhileColl() {
     return getWf(ConstantsTestCoreEEiO.afclFileWhileColl);
   }
+  
+  public static Workflow getWhileWhile() {
+    return getWf(ConstantsTestCoreEEiO.afclFileWhileWhile);
+  }
 
   protected static Workflow getWf(String fileName) {
     try {

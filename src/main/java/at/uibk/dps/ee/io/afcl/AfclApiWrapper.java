@@ -8,6 +8,7 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
+import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
 import at.uibk.dps.afcl.functions.objects.DataOutsAtomic;
@@ -132,9 +133,16 @@ public final class AfclApiWrapper {
         }
       }
       return null;
-    }
-    
-    else {
+    } else if (function instanceof While) {
+      While whileComp = (While) function;
+      for (Function loopBodyFunction : whileComp.getLoopBody()) {
+        Function inside = searchInsideFunction(loopBodyFunction, name);
+        if (inside != null) {
+          return inside;
+        }
+      }
+      return null;
+    } else {
       throw new IllegalStateException("Unknown compound:" + function.getName());
     }
   }
