@@ -3,7 +3,6 @@ package at.uibk.dps.ee.io.afcl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import com.google.gson.JsonPrimitive;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
@@ -44,9 +43,9 @@ public final class AfclCompoundsWhile {
     Task whileStart = PropertyServiceData.createWhileStart(whileCompound.getName());
     graph.addVertex(whileStart);
     // create the data node representing the loop counter
-    Task loopCounter =
-        PropertyServiceData.createConstantNode(whileCompound.getName() + ConstantsAfcl.SourceAffix
-            + ConstantsEEModel.WhileLoopCounterSuffix, DataType.Number, new JsonPrimitive(0));
+    String counterId = whileCompound.getName() + ConstantsAfcl.SourceAffix
+        + ConstantsEEModel.WhileLoopCounterSuffix;
+    Task loopCounter = PropertyServiceData.createWhileCounter(counterId);
     graph.addVertex(loopCounter);
     // create the contents of the loop body
     Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
@@ -59,7 +58,7 @@ public final class AfclCompoundsWhile {
     loopBodyFunctions.forEach(bodyFunction -> PropertyServiceDependency
         .addDataDependency(whileStart, bodyFunction, ConstantsEEModel.JsonKeyWhileStart, graph));
     // create the node representing the end of the while compound/iteration
-    Task whileEnd = PropertyServiceFunctionUtilityWhile.createWhileEndTask(whileStart);
+    Task whileEnd = PropertyServiceFunctionUtilityWhile.createWhileEndTask(whileStart, loopCounter);
     // connect the condition node and the loop counter to the while end
     PropertyServiceDependency.addDataDependency(loopCounter, whileEnd,
         ConstantsEEModel.JsonKeyWhileCounter, graph);
@@ -114,13 +113,13 @@ public final class AfclCompoundsWhile {
     List<Condition> conditions = new ArrayList<>();
     Task conditionNode =
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
-    whileCompound.getCondition()
-        .forEach(cond -> AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow));
+    whileCompound.getCondition().forEach(cond -> conditions
+        .add(AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow)));
     PropertyServiceFunctionUtilityCondition.setConditions(conditionNode, conditions);
     Task stopDecisionVariable = new Communication(whileCompound.getName()
         + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileStopConditionBooleanSuffix);
     PropertyServiceDependency.addDataDependency(conditionNode, stopDecisionVariable,
-        ConstantsEEModel.JsonKeyWhileDecision, graph);
+        ConstantsEEModel.JsonKeyIfDecision, graph);
     return stopDecisionVariable;
   }
 }
