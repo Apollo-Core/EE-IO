@@ -36,6 +36,8 @@ public class ConstantsTestCoreEEiO {
   public static final String afclFileWhileColl = "src/test/resources/wfInputFiles/while.yaml";
   public static final String afclFileWhileNum = "src/test/resources/wfInputFiles/whileNum.yaml";
   public static final String afclFileWhileWhile = "src/test/resources/wfInputFiles/whileWhile.yaml";
+  public static final String afclFileWhileOneLevel = "src/test/resources/wfInputFiles/whileOneLevel.yaml";
+  public static final String afclFileWhileMultiLevel = "src/test/resources/wfInputFiles/whileMultiLevel.yaml";
 
   // single atomic names
   public static final String wfNameAtomic = "single Atomic";

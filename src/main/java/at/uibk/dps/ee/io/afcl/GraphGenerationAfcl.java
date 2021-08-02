@@ -1,7 +1,9 @@
 package at.uibk.dps.ee.io.afcl;
 
 import java.util.List;
-
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.objects.DataIns;
@@ -10,7 +12,9 @@ import at.uibk.dps.ee.io.validation.GraphValidation;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
+import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import net.sf.opendse.model.Communication;
+import net.sf.opendse.model.Dependency;
 import net.sf.opendse.model.Task;
 
 /**
@@ -36,13 +40,59 @@ public final class GraphGenerationAfcl {
    * @return the {@link EnactmentGraph} modeling the enactment of the workflow
    */
   public static EnactmentGraph generateEnactmentGraph(final Workflow afclWorkflow) {
+    // remember the while references for the workflow
+    Map<String, Set<WhileInputReference>> whileReferences =
+        AfclCompounds.parseWhileRelations(afclWorkflow);
     final EnactmentGraph result = new EnactmentGraph();
     addWfInputNodes(result, AfclApiWrapper.getDataIns(afclWorkflow),
         AfclApiWrapper.getName(afclWorkflow));
     addWfFunctions(result, afclWorkflow);
     annotateWfOutputs(result, AfclApiWrapper.getDataOuts(afclWorkflow), afclWorkflow);
+    annotateWhileReferences(result, whileReferences);
     GraphValidation.validateGraph(result);
     return result;
+  }
+
+  /**
+   * Reflects the while edges in the enactment graph by annotating the
+   * corresponding in-edges
+   * 
+   * @param eGraph the given enactment graph
+   * @param whileReferences the while references read from the original workflow
+   */
+  protected static void annotateWhileReferences(EnactmentGraph eGraph,
+      Map<String, Set<WhileInputReference>> whileReferences) {
+    whileReferences.forEach((functionName, referenceSet) -> referenceSet
+        .forEach(reference -> annotateWhileReferenceFunction(eGraph, functionName, reference)));
+  }
+
+  /**
+   * Annotates the while reference for the given function
+   * 
+   * @param graph the enactment graph
+   * @param functionName the function name
+   * @param inputReference the processed input reference
+   */
+  protected static void annotateWhileReferenceFunction(EnactmentGraph graph, String functionName,
+      WhileInputReference inputReference) {
+    Task function = graph.getVertex(functionName);
+    if (function == null) {
+      throw new IllegalStateException(
+          "Function " + functionName + " while-referenced, but not in graph.");
+    }
+    // find the correct in Edge and annotate it
+    Task furtherIterationDataNode =
+        Optional.ofNullable(graph.getVertex(inputReference.getLaterIterationsInput()))
+            .orElseThrow(() -> new IllegalStateException("Later while reference "
+                + inputReference.getLaterIterationsInput() + " not in the graph"));
+    for (Dependency inEdge : graph.getInEdges(function)) {
+      if (graph.getSource(inEdge).getId().equals(inputReference.getFirstIterationInput())) {
+        PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode);
+        return;
+      }
+    }
+    throw new IllegalStateException("Input edge to " + inputReference.getFirstIterationInput()
+        + " not found for function " + functionName);
   }
 
   /**

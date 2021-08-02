@@ -36,11 +36,11 @@ workflowBody:
           negation: "false"
           combinedWith: "and"                    
       dataOuts:
-        - name: "overallSum"
+        - name: "sum"
           type: "number"
           source: "sumUpFunction/sum" 
 dataOuts:
   - name: "overallOutput"
     type: "number"
-    source: "while/overallSum"
+    source: "while/sum"
 

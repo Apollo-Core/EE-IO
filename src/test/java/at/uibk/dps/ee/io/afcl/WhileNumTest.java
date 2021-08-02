@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
-import at.uibk.dps.ee.visualization.model.EnactmentGraphViewer;
 import net.sf.opendse.model.Dependency;
 import net.sf.opendse.model.Task;
 import net.sf.opendse.model.properties.TaskPropertyService;
@@ -28,8 +27,6 @@ class WhileNumTest {
     int numData = (int) result.getVertices().stream()
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
-
-    EnactmentGraphViewer.view(result);
 
     Task function = result.getVertex("increment");
     Task input = result.getVertex("single Atomic/input");

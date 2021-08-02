@@ -1,19 +1,25 @@
 package at.uibk.dps.ee.io.afcl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
+import at.uibk.dps.afcl.functions.Compound;
 import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.LoopCompound;
 import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
+import at.uibk.dps.afcl.functions.objects.DataOuts;
 import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
@@ -203,5 +209,146 @@ public final class AfclCompounds {
       }
     }
     return result;
+  }
+
+  /**
+   * Parses the given workflow and extracts the while relations of the functions,
+   * if any.
+   * 
+   * @param workFlow the given workflow
+   * @return a map mapping the function IDs to their {@link WhileInputReference}s
+   */
+  protected static Map<String, Set<WhileInputReference>> parseWhileRelations(Workflow workFlow) {
+    Map<String, Set<WhileInputReference>> resultMap = new HashMap<>();
+    processFunctionListRefs(workFlow.getWorkflowBody(), workFlow, resultMap);
+    return resultMap;
+  }
+
+  /**
+   * Processes the given list of functions and finds the while references for each
+   * of them.
+   * 
+   * @param functions the list of functions
+   * @param workflow the overall workflow
+   * @param references the map of function while references
+   */
+  protected static void processFunctionListRefs(List<Function> functions, Workflow workflow,
+      Map<String, Set<WhileInputReference>> references) {
+    for (Function function : functions) {
+      if (function instanceof AtomicFunction) {
+        Set<WhileInputReference> functionRefs =
+            processAtomicFunctionForWhileRefs((AtomicFunction) function, workflow);
+        if (!functionRefs.isEmpty()) {
+          references.put(function.getName(), functionRefs);
+        }
+      } else if (function instanceof Compound) {
+        processCompoundRefs(references, (Compound) function, workflow);
+      } else {
+        throw new IllegalStateException(
+            "Function " + function.getName() + " is neither atomic nor compound.");
+      }
+    }
+  }
+
+  /**
+   * Processes the given compound and finds all while references for the atomic
+   * functions contained therein.
+   * 
+   * @param references the map of function while references
+   * @param compound the processed compound
+   * @param workflow the overall workflow
+   */
+  protected static void processCompoundRefs(Map<String, Set<WhileInputReference>> references,
+      Compound compound, Workflow workflow) {
+    List<Function> functions = new ArrayList<>();
+    if (compound instanceof ParallelFor) {
+      ParallelFor parFor = (ParallelFor) compound;
+      functions.addAll(parFor.getLoopBody());
+    } else if (compound instanceof While) {
+      While whileCom = (While) compound;
+      functions.addAll(whileCom.getLoopBody());
+    } else if (compound instanceof IfThenElse) {
+      IfThenElse ifComp = (IfThenElse) compound;
+      functions.addAll(ifComp.getThenBranch());
+      functions.addAll(ifComp.getElseBranch());
+    } else {
+      throw new IllegalStateException(
+          "Compound " + compound.getName() + " has an unknown compound type.");
+    }
+    processFunctionListRefs(functions, workflow, references);
+  }
+
+  /**
+   * Checks the inputs of the given atomic function and returns the references to
+   * its first and further sources.
+   * 
+   * @param function the atomic function
+   * @param workflow the overall workflow
+   * @return the set of the function's {@link WhileInputReference}s
+   */
+  protected static Set<WhileInputReference> processAtomicFunctionForWhileRefs(
+      AtomicFunction function, Workflow workflow) {
+    Set<WhileInputReference> result = new HashSet<>();
+    for (DataIns dataIn : function.getDataIns()) {
+      String source = dataIn.getSource();
+      if (!UtilsAfcl.isSrcString(source)) {
+        continue;
+      }
+      String srcFunctionName = UtilsAfcl.getProducerId(source);
+      if (srcFunctionName.equals(workflow.getName())) {
+        continue;
+      }
+      Function srcFunction = AfclApiWrapper.getFunction(workflow, srcFunctionName);
+      if (srcFunction instanceof While) {
+        While whileFunc = (While) srcFunction;
+        String dataName = UtilsAfcl.getDataId(source);
+        result.add(getInputReference(whileFunc, dataName, workflow));
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Generates the while input reference for the given data in of the given while
+   * function.
+   * 
+   * @param whileFunction the given while function
+   * @param dataName the data in name
+   * @param workflow the overall workflow
+   * @return the while input reference for the given data in of the given while
+   *         function
+   */
+  protected static WhileInputReference getInputReference(While whileFunction, String dataName,
+      Workflow workflow) {
+    // find the actual source of the While's data in
+    Optional<DataIns> dataInOpt = Optional.empty();
+    for (DataIns dataIn : whileFunction.getDataIns()) {
+      if (dataIn.getName().equals(dataName)) {
+        dataInOpt = Optional.of(dataIn);
+        break;
+      }
+    }
+    DataIns srcDataIn = dataInOpt.orElseThrow(() -> new IllegalArgumentException("While function "
+        + whileFunction.getName() + " does not have a data in with the name " + dataName));
+    String srcStringDataIn = srcDataIn.getSource();
+    String actualSrcDataIn = UtilsAfcl.isSrcString(srcStringDataIn)
+        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataIn, workflow)
+        : srcStringDataIn;
+    // find the actual source of the While's data out
+    Optional<DataOuts> dataOutOpt = Optional.empty();
+    for (DataOuts dataOut : whileFunction.getDataOuts()) {
+      if (dataOut.getName().equals(dataName)) {
+        dataOutOpt = Optional.of(dataOut);
+        break;
+      }
+    }
+    DataOuts srcDataOut =
+        dataOutOpt.orElseThrow(() -> new IllegalArgumentException("While function "
+            + whileFunction.getName() + " does not have a data out with the name " + dataName));
+    String srcStringDataOut = srcDataOut.getSource();
+    String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
+        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, workflow)
+        : srcStringDataOut;
+    return new WhileInputReference(actualSrcDataIn, actualSrcDataOut);
   }
 }
