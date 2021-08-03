@@ -17,10 +17,9 @@ class WhileInputReadTest {
   void test() {
     Map<String, Set<WhileInputReference>> result = AfclCompounds.parseWhileRelations(multiLevelInput);
     assertEquals(1, result.size());
-    assertEquals(3, result.get(functionName).size());
+    assertEquals(2, result.get(functionName).size());
     
     checkMapEntry(result, functionName, "whileWhile/inputTwo", "add/sumResult");
-    checkMapEntry(result, functionName, "whileWhile/inputOne", "add/sumResult");
     checkMapEntry(result, functionName, "whileWhile/inputOne", "add/sumResult");
   }
 

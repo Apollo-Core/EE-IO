@@ -94,7 +94,7 @@ public final class AfclCompoundsAtomic {
         // constant data in
         continue;
       }
-      final String actualSrc = HierarchyLevellingAfcl.getSrcDataId(srcString, workflow);
+      final String actualSrc = HierarchyLevellingAfcl.getSrcDataId(srcString, function, workflow);
       dataIn.setSource(actualSrc);
     }
   }

@@ -109,13 +109,13 @@ public final class AfclCompoundsIf {
    */
   protected static void addChoiceFunction(final EnactmentGraph graph, final DataOuts dataOut,
       final IfThenElse ifCompound, final Workflow workflow, final Task conditionVariable) {
-    checkDataOutIfSrc(dataOut, graph, workflow);
+    checkDataOutIfSrc(dataOut, graph, workflow, ifCompound);
     final String srcString = AfclApiWrapper.getSource(dataOut);
     final String firstSrc = UtilsAfcl.getFirstSubStringIfOut(srcString);
     final String secondSrc = UtilsAfcl.getSecondSubStringIfOut(srcString);
     final Task firstSrcNode = graph.getVertex(firstSrc);
     final Task secondSrcNode = Optional.fromNullable(graph.getVertex(secondSrc))
-        .or(graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, workflow)));
+        .or(graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifCompound, workflow)));
     // create the choice function node
     final String funcNodeId = firstSrc + ConstantsEEModel.EarliestArrivalFuncAffix + secondSrc;
     final Task choiceFunction = PropertyServiceFunctionDataFlow.createDataFlowFunction(funcNodeId,
@@ -144,9 +144,10 @@ public final class AfclCompoundsIf {
    * 
    * @param dataOut the data out to check
    * @param graph the hitherto created enactment graph
+   * @param ifElse the if compound
    */
   protected static void checkDataOutIfSrc(final DataOuts dataOut, final EnactmentGraph graph,
-      final Workflow workflow) {
+      final Workflow workflow, IfThenElse ifElse) {
     final String srcString = AfclApiWrapper.getSource(dataOut);
     if (!UtilsAfcl.isIfOutSrc(srcString)) {
       throw new IllegalArgumentException("The src of data out " + AfclApiWrapper.getName(dataOut)
@@ -166,8 +167,8 @@ public final class AfclCompoundsIf {
     if (graph.getVertex(firstSrc) == null) {
       throw new IllegalStateException("Src of if data out " + firstSrc + " not in the graph");
     }
-    if (graph.getVertex(secondSrc) == null
-        && graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, workflow)) == null) {
+    if (graph.getVertex(secondSrc) == null && graph
+        .getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifElse, workflow)) == null) {
       throw new IllegalStateException("Src of if data out " + secondSrc + " not in the graph");
     }
   }
@@ -189,7 +190,7 @@ public final class AfclCompoundsIf {
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
     for (final at.uibk.dps.afcl.functions.objects.Condition afclCondition : ifCompound
         .getCondition()) {
-      conditions.add(addConditionNode(graph, afclCondition, funcNode, workflow));
+      conditions.add(addConditionNode(graph, afclCondition, funcNode, workflow, ifCompound));
     }
     PropertyServiceFunctionUtilityCondition.setConditions(funcNode, conditions);
 
@@ -213,11 +214,11 @@ public final class AfclCompoundsIf {
    */
   protected static Condition addConditionNode(final EnactmentGraph graph,
       final at.uibk.dps.afcl.functions.objects.Condition condition, final Task conditionFunction,
-      final Workflow workflow) {
+      final Workflow workflow, Function ifElse) {
     final String firstInput =
-        getConditionDataSrc(condition.getData1(), conditionFunction.getId(), workflow);
+        getConditionDataSrc(condition.getData1(), conditionFunction.getId(), workflow, ifElse);
     final String secondInput =
-        getConditionDataSrc(condition.getData2(), conditionFunction.getId(), workflow);
+        getConditionDataSrc(condition.getData2(), conditionFunction.getId(), workflow, ifElse);
     final Operator operator = UtilsAfcl.getOperatorForString(condition.getOperator());
     final DataType dataType = UtilsAfcl.getDataTypeForString(condition.getType());
     final Task conditionInFirst = addConditionIn(graph, conditionFunction, firstInput, dataType);
@@ -239,9 +240,9 @@ public final class AfclCompoundsIf {
    * @return the actual src string for the given condition data
    */
   protected static String getConditionDataSrc(final String conditionDataString,
-      final String conditionFunctionId, final Workflow workflow) {
+      final String conditionFunctionId, final Workflow workflow, Function ifElse) {
     if (UtilsAfcl.isSrcString(conditionDataString)) {
-      return HierarchyLevellingAfcl.getSrcDataId(conditionDataString, workflow);
+      return HierarchyLevellingAfcl.getSrcDataId(conditionDataString, ifElse, workflow);
     } else {
       return conditionDataString;
     }

@@ -74,9 +74,8 @@ public class SingleAtomicAfclTest {
     assertEquals(DataType.Number, PropertyServiceData.getDataType(actualRoot));
 
     assertFalse(PropertyServiceData.isRoot(constantData));
-    assertEquals(UtilsAfcl.getDataNodeId(
-        ConstantsTestCoreEEiO.wfFunctionNameAtomic + ConstantsEEModel.ConstantNodeAffix,
-        ConstantsTestCoreEEiO.wfFunctionConstantInputNameAtomic), constantData.getId());
+    assertEquals(ConstantsEEModel.ConstantNodeAffix + "/"
+        + "5", constantData.getId());
     assertEquals(DataType.Number, PropertyServiceData.getDataType(constantData));
     assertEquals(ConstantsTestCoreEEiO.wfSingleAtomicConstant,
         PropertyServiceData.getContent(constantData).getAsInt());

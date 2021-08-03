@@ -43,7 +43,7 @@ workflowBody:
                 negation: false
                 combinedWith: "and"
             dataOuts:
-              - name: "innerWhileRes"
+              - name: "innerIterator"
                 type: "number"
                 source: "add/sumResult"
       condition:
@@ -54,10 +54,10 @@ workflowBody:
           negation: "false"
           combinedWith: "and"                 
       dataOuts:
-        - name: "outerWhileRes"
+        - name: "outerIterator"
           type: "number"
-          source: "innerWhile/innerWhileRes" 
+          source: "innerWhile/innerIterator" 
 dataOuts:
   - name: "overallOutput"
     type: "number"
-    source: "while/outerWhileRes"
+    source: "while/outerIterator"

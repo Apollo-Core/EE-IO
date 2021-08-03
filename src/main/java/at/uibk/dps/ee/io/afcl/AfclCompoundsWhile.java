@@ -114,7 +114,7 @@ public final class AfclCompoundsWhile {
     Task conditionNode =
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
     whileCompound.getCondition().forEach(cond -> conditions
-        .add(AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow)));
+        .add(AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow, whileCompound)));
     PropertyServiceFunctionUtilityCondition.setConditions(conditionNode, conditions);
     Task stopDecisionVariable = new Communication(whileCompound.getName()
         + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileStopConditionBooleanSuffix);

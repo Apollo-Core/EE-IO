@@ -144,7 +144,7 @@ public final class AfclCompounds {
     final String jsonString = AfclApiWrapper.getSource(dataIn);
     final JsonElement content = JsonParser.parseString(jsonString);
     final String dataNodeId =
-        function.getId() + ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonKey;
+        ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonString;
     final Task constantDataNode =
         PropertyServiceData.createConstantNode(dataNodeId, dataType, content);
     PropertyServiceDependency.addDataDependency(constantDataNode, function, jsonKey, graph);
@@ -270,7 +270,9 @@ public final class AfclCompounds {
     } else if (compound instanceof IfThenElse) {
       IfThenElse ifComp = (IfThenElse) compound;
       functions.addAll(ifComp.getThenBranch());
-      functions.addAll(ifComp.getElseBranch());
+      if (ifComp.getElseBranch() != null) {
+        functions.addAll(ifComp.getElseBranch());
+      }
     } else {
       throw new IllegalStateException(
           "Compound " + compound.getName() + " has an unknown compound type.");
@@ -302,7 +304,7 @@ public final class AfclCompounds {
       if (srcFunction instanceof While) {
         While whileFunc = (While) srcFunction;
         String dataName = UtilsAfcl.getDataId(source);
-        result.add(getInputReference(whileFunc, dataName, workflow));
+        result.add(getInputReference(whileFunc, dataName, workflow, function));
       }
     }
     return result;
@@ -315,11 +317,12 @@ public final class AfclCompounds {
    * @param whileFunction the given while function
    * @param dataName the data in name
    * @param workflow the overall workflow
+   * @param innerFunction the function within the while compound
    * @return the while input reference for the given data in of the given while
    *         function
    */
   protected static WhileInputReference getInputReference(While whileFunction, String dataName,
-      Workflow workflow) {
+      Workflow workflow, Function innerFunction) {
     // find the actual source of the While's data in
     Optional<DataIns> dataInOpt = Optional.empty();
     for (DataIns dataIn : whileFunction.getDataIns()) {
@@ -332,7 +335,7 @@ public final class AfclCompounds {
         + whileFunction.getName() + " does not have a data in with the name " + dataName));
     String srcStringDataIn = srcDataIn.getSource();
     String actualSrcDataIn = UtilsAfcl.isSrcString(srcStringDataIn)
-        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataIn, workflow)
+        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataIn, innerFunction, workflow)
         : srcStringDataIn;
     // find the actual source of the While's data out
     Optional<DataOuts> dataOutOpt = Optional.empty();
@@ -347,7 +350,7 @@ public final class AfclCompounds {
             + whileFunction.getName() + " does not have a data out with the name " + dataName));
     String srcStringDataOut = srcDataOut.getSource();
     String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
-        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, workflow)
+        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, null, workflow)
         : srcStringDataOut;
     return new WhileInputReference(actualSrcDataIn, actualSrcDataOut);
   }

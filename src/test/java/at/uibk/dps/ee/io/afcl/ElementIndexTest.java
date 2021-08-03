@@ -1,10 +1,12 @@
 package at.uibk.dps.ee.io.afcl;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
+import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtility;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtility.UtilityType;
@@ -39,7 +41,11 @@ public class ElementIndexTest {
 
     // that we have the right predecessor relations and the right naming
     Task functionNode = result.getVertex(ConstantsTestCoreEEiO.wfFunctionNameAtomic);
-    Task dataNodeProcessed2 = result.getPredecessors(functionNode).iterator().next();
+    Iterator<Task> iter = result.getPredecessors(functionNode).iterator();
+    Task dataNodeProcessed2 = iter.next();
+    if (PropertyServiceData.isConstantNode(dataNodeProcessed2)) {
+      dataNodeProcessed2 = iter.next();
+    }
     Task dataProcessingNode2 = result.getPredecessors(dataNodeProcessed2).iterator().next();
 
     Task dataNodeProcessed = result.getPredecessors(dataProcessingNode2).iterator().next();

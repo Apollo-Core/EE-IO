@@ -49,9 +49,8 @@ public class IfAfclMultiFuncTest {
     }
 
     int edgeNum = result.getEdgeCount();
-
     assertEquals(5, funcNum);
-    assertEquals(13, dataNum);
+    assertEquals(12, dataNum);
     assertEquals(21, edgeNum);
 
     Task func1Node = result.getVertex("func1");

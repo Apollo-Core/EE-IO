@@ -9,6 +9,7 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
 import at.uibk.dps.ee.io.validation.GraphValidation;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
@@ -85,8 +86,11 @@ public final class GraphGenerationAfcl {
         Optional.ofNullable(graph.getVertex(inputReference.getLaterIterationsInput()))
             .orElseThrow(() -> new IllegalStateException("Later while reference "
                 + inputReference.getLaterIterationsInput() + " not in the graph"));
+    String firstIterId = UtilsAfcl.isSrcString(inputReference.getFirstIterationInput())
+        ? inputReference.getFirstIterationInput()
+        : ConstantsEEModel.ConstantNodeAffix + "/" + inputReference.getFirstIterationInput();
     for (Dependency inEdge : graph.getInEdges(function)) {
-      if (graph.getSource(inEdge).getId().equals(inputReference.getFirstIterationInput())) {
+      if (graph.getSource(inEdge).getId().equals(firstIterId)) {
         PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode);
         return;
       }
@@ -132,7 +136,7 @@ public final class GraphGenerationAfcl {
    */
   protected static void correctDataOut(final DataOuts dataOut, final Workflow workflow) {
     final String srcString = dataOut.getSource();
-    final String correctSrc = HierarchyLevellingAfcl.getSrcDataId(srcString, workflow);
+    final String correctSrc = HierarchyLevellingAfcl.getSrcDataId(srcString, null, workflow);
     dataOut.setSource(correctSrc);
   }
 

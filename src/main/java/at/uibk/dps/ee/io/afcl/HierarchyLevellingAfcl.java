@@ -7,6 +7,7 @@ import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
+import at.uibk.dps.afcl.functions.objects.DataOuts;
 import at.uibk.dps.afcl.functions.objects.DataOutsAtomic;
 import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 
@@ -27,11 +28,12 @@ public final class HierarchyLevellingAfcl {
    * Returns the data id corresponding to the provided source string
    * 
    * @param afclSource the src string in the afcl file
-   * @param function the function whose source is being determined
+   * @param funcWithSrc the function whose source is being determined
    * @param workflow the workflow built based on the afcl file
    * @return the data id in the flattened graph
    */
-  public static String getSrcDataId(final String afclSource, final Workflow workflow) {
+  public static String getSrcDataId(final String afclSource, Function funcWithSrc,
+      final Workflow workflow) {
 
     final String funcName = UtilsAfcl.getProducerId(afclSource);
     if (funcName.equals(workflow.getName())) {
@@ -46,12 +48,12 @@ public final class HierarchyLevellingAfcl {
       checkAtomicFunctionOut((AtomicFunction) function, dataName);
       return afclSource;
     } else if (function instanceof IfThenElse) {
-      return getSrcDataIdIfThenElse(afclSource, dataName, function, workflow);
+      return getSrcDataIdIfThenElse(afclSource, dataName, function, workflow, funcWithSrc);
     } else if (function instanceof ParallelFor) {
       final ParallelFor parFor = (ParallelFor) function;
-      return getSrcDataIdParallelFor(parFor, afclSource, dataName, workflow);
+      return getSrcDataIdParallelFor(parFor, afclSource, dataName, workflow, funcWithSrc);
     } else if (function instanceof While) {
-      return getDataIdWhile(afclSource, dataName, (While) function, workflow);
+      return getDataIdWhile(afclSource, dataName, (While) function, workflow, funcWithSrc);
     } else {
       throw new IllegalStateException(
           "Not yet implemented for " + function.getClass().getCanonicalName());
@@ -66,25 +68,45 @@ public final class HierarchyLevellingAfcl {
    * @param dataName the data id
    * @param whileCompound the while compound
    * @param workflow the whole workflow
+   * @param funcWithSrc the function whose src we are looking for
    * @return id of the correct data node described by the given src string
    *         (pointing to a while compound)
    */
   protected static String getDataIdWhile(final String afclSource, String dataName,
-      While whileCompound, Workflow workflow) {
+      While whileCompound, Workflow workflow, Function funcWithSrc) {
+    // looking for the while counter
     if (dataName.equals(ConstantsEEModel.WhileLoopCounterSuffix)) {
       return afclSource;
     }
-    for (DataIns dataIn : whileCompound.getDataIns()) {
-      if (dataIn.getName().equals(dataName)) {
-        String srcString = dataIn.getSource();
-        if (!UtilsAfcl.isSrcString(srcString)) {
-          return srcString;
-        } else {
-          return getSrcDataId(dataIn.getSource(), workflow);
+    if (funcWithSrc == null || !AfclApiWrapper.contains(whileCompound, funcWithSrc)) {
+      // case where the request comes from outside the while compound (inclusive the
+      // case where we are looking for the src of the WF data out)
+      for (DataOuts dataOut : whileCompound.getDataOuts()) {
+        if (dataOut.getName().equals(dataName)) {
+          String srcString = dataOut.getSource();
+          if (!UtilsAfcl.isSrcString(srcString)) {
+            return srcString;
+          } else {
+            return getSrcDataId(dataOut.getSource(), funcWithSrc, workflow);
+          }
+        }
+      }
+    } else {
+      // case where the requesting function is within the while compound
+      for (DataIns dataIn : whileCompound.getDataIns()) {
+        if (dataIn.getName().equals(dataName)) {
+          String srcString = dataIn.getSource();
+          if (!UtilsAfcl.isSrcString(srcString)) {
+            // Constant case
+            return ConstantsEEModel.ConstantNodeAffix + "/" + srcString;
+          } else {
+            return getSrcDataId(dataIn.getSource(), funcWithSrc, workflow);
+          }
         }
       }
     }
-    return afclSource;
+    throw new IllegalStateException("The src string " + afclSource
+        + " does not point to any valid port of the while compound " + whileCompound.getName());
   }
 
   /**
@@ -99,10 +121,10 @@ public final class HierarchyLevellingAfcl {
    *         IF compound
    */
   protected static String getSrcDataIdIfThenElse(final String afclSource, final String dataName,
-      final Function ifFunction, final Workflow workflow) {
+      final Function ifFunction, final Workflow workflow, Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(afclSource, ifFunction)) {
       // points to data in
-      return getSrcDataId(AfclApiWrapper.getDataInSrc(ifFunction, dataName), workflow);
+      return getSrcDataId(AfclApiWrapper.getDataInSrc(ifFunction, dataName), funcWithSrc, workflow);
     } else {
       // points to data out of if compound => there should be a data node with the
       // data out src as id
@@ -122,7 +144,8 @@ public final class HierarchyLevellingAfcl {
    *         to a parallel for compound
    */
   protected static String getSrcDataIdParallelFor(final ParallelFor parFor,
-      final String sourceString, final String dataName, final Workflow workflow) {
+      final String sourceString, final String dataName, final Workflow workflow,
+      Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(sourceString, parFor)) {
       // parallel for data in
       if (parFor.getIterators().contains(dataName)) {
@@ -130,7 +153,7 @@ public final class HierarchyLevellingAfcl {
         return sourceString;
       } else {
         // backtrack to producer
-        return getSrcDataId(AfclApiWrapper.getDataInSrc(parFor, dataName), workflow);
+        return getSrcDataId(AfclApiWrapper.getDataInSrc(parFor, dataName), funcWithSrc, workflow);
       }
     } else {
       // the aggregated data node's ID should match the src String

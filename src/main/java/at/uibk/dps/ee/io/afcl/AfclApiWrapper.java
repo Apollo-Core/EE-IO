@@ -83,6 +83,19 @@ public final class AfclApiWrapper {
     throw new IllegalStateException("Function " + name + " not found in WF " + wf.getName());
   }
 
+  /**
+   * Returns true iff the given subfunction is within the body of the given
+   * function. Returns false in all other cases.
+   * 
+   * @param function the function potentially containing the other one
+   * @param subFunction the function potentially contained in the other one
+   * @return true iff the given subfunction is within the body of the given
+   *         function. Returns false in all other cases
+   */
+  public static boolean contains(Function function, Function subFunction) {
+    return (searchInsideFunction(function, subFunction.getName()) != null);
+  }
+
   public static String getDataInSrc(Function func, String dInName) {
     for (DataIns dIn : getDataIns(func)) {
       if (dIn.getName().equals(dInName)) {
