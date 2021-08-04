@@ -9,19 +9,14 @@ public class WhileInputReference {
 
   protected final String firstIterationInput;
   protected final String laterIterationsInput;
+  protected final String whileCompoundId;
 
-  /**
-   * Standard constructor.
-   * 
-   * @param firstIterationInput the reference to the input which is used during
-   *        the first iteration of the while
-   * @param laterIterationsInput the reference to the input which is used during
-   *        later iterations of the while
-   */
-  public WhileInputReference(String firstIterationInput, String laterIterationsInput) {
+  public WhileInputReference(String firstIterationInput, String laterIterationsInput,
+      String whileCompoundId) {
     super();
     this.firstIterationInput = firstIterationInput;
     this.laterIterationsInput = laterIterationsInput;
+    this.whileCompoundId = whileCompoundId;
   }
 
   public String getFirstIterationInput() {
@@ -32,6 +27,10 @@ public class WhileInputReference {
     return laterIterationsInput;
   }
 
+  public String getWhileCompoundId() {
+    return whileCompoundId;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -39,6 +38,7 @@ public class WhileInputReference {
     result = prime * result + ((firstIterationInput == null) ? 0 : firstIterationInput.hashCode());
     result =
         prime * result + ((laterIterationsInput == null) ? 0 : laterIterationsInput.hashCode());
+    result = prime * result + ((whileCompoundId == null) ? 0 : whileCompoundId.hashCode());
     return result;
   }
 
@@ -60,6 +60,11 @@ public class WhileInputReference {
       if (other.laterIterationsInput != null)
         return false;
     } else if (!laterIterationsInput.equals(other.laterIterationsInput))
+      return false;
+    if (whileCompoundId == null) {
+      if (other.whileCompoundId != null)
+        return false;
+    } else if (!whileCompoundId.equals(other.whileCompoundId))
       return false;
     return true;
   }

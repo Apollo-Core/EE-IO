@@ -16,13 +16,13 @@ workflowBody:
             name: "sumUpFunction"
             type: "addition"
             dataIns:
-            - name: "parallel_coll"
+            - name: "firstSummand"
               type: "collection"
               source: "single Atomic/wf_coll"
               constraints:
                 - name: "element-index"
                   value: while/counter
-            - name: "sum"
+            - name: "secondSummand"
               type: "number"
               source: "while/sum"            
             dataOuts: 

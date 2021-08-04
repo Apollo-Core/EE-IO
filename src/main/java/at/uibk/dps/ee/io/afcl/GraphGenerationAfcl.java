@@ -91,7 +91,8 @@ public final class GraphGenerationAfcl {
         : ConstantsEEModel.ConstantNodeAffix + "/" + inputReference.getFirstIterationInput();
     for (Dependency inEdge : graph.getInEdges(function)) {
       if (graph.getSource(inEdge).getId().equals(firstIterId)) {
-        PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode);
+        PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode,
+            inputReference.getWhileCompoundId());
         return;
       }
     }

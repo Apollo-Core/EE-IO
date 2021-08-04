@@ -4,6 +4,7 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOutsAtomic;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUser;
@@ -36,12 +37,27 @@ public final class AfclCompoundsAtomic {
     final Task atomicTask = createTaskFromAtomicFunction(atomicFunc);
     // process the inputs
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(atomicFunc)) {
+      correctDataIn(dataIn);
       final DataType expectedType = UtilsAfcl.getDataTypeForString(dataIn.getType());
       AfclCompounds.addDataIn(graph, atomicTask, dataIn, expectedType);
     }
     // process the outputs
     for (final DataOutsAtomic dataOut : AfclApiWrapper.getDataOuts(atomicFunc)) {
       addDataOut(graph, atomicTask, dataOut);
+    }
+  }
+
+  /**
+   * Checks whether the given data in (at wf level) references a constant and
+   * corrects the data in src accordingly
+   * 
+   * @param dataIn the data in
+   */
+  protected static void correctDataIn(DataIns dataIn) {
+    if (!UtilsAfcl.isSrcString(dataIn.getSource())) {
+      String corrected =
+          ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + dataIn.getSource();
+      dataIn.setSource(corrected);
     }
   }
 

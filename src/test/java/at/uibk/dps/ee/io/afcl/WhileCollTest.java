@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
+import at.uibk.dps.ee.model.properties.PropertyServiceData;
+import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
+import net.sf.opendse.model.Dependency;
+import net.sf.opendse.model.Task;
 import net.sf.opendse.model.properties.TaskPropertyService;
 
 class WhileCollTest {
@@ -24,6 +28,11 @@ class WhileCollTest {
     int numData = (int) result.getVertices().stream()
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
+
+    Task constantInput = result.getVertex("Constant/0");
+    Dependency outEdge = result.getOutEdges(constantInput).iterator().next();
+    assertEquals("secondSummand", PropertyServiceDependency.getJsonKey(outEdge));
+    assertTrue(PropertyServiceData.isConstantNode(constantInput));
 
     assertEquals(4, numFunc);
     assertEquals(8, numData);

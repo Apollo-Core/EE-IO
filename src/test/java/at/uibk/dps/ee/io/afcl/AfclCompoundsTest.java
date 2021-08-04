@@ -24,7 +24,7 @@ public class AfclCompoundsTest {
     DataIns dataIn = new DataIns();
     dataIn.setName(dataInName);
     dataIn.setType("number");
-    dataIn.setSource("5");
+    dataIn.setSource("Constant/5");
 
     AfclCompounds.addDataInConstant(graph, function, dataIn, DataType.Number);
 

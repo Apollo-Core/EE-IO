@@ -31,7 +31,7 @@ class HierarchyLevelingAfclTest {
   void testOuterRequest() {
     Function outerWhile = AfclApiWrapper.getFunction(workFlow, "while");
     String requested = "innerWhile/innerIterator";
-    String expected = "add/sumResult";
+    String expected = "innerWhile/innerIterator";
     String result = HierarchyLevellingAfcl.getSrcDataId(requested, outerWhile, workFlow);
     assertEquals(expected, result);
   }
@@ -41,8 +41,8 @@ class HierarchyLevelingAfclTest {
    */
   @Test
   void testWfOutRequest() {
-    String requested = "innerWhile/innerIterator";
-    String expected = "add/sumResult";
+    String requested = "while/outerIterator";
+    String expected = "while/outerIterator";
     String result = HierarchyLevellingAfcl.getSrcDataId(requested, null, workFlow);
     assertEquals(expected, result);
   }

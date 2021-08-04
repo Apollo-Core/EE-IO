@@ -15,12 +15,14 @@ class WhileInputReadTest {
 
   @Test
   void test() {
-    Map<String, Set<WhileInputReference>> result = AfclCompounds.parseWhileRelations(multiLevelInput);
+    Map<String, Set<WhileInputReference>> result =
+        AfclCompounds.parseWhileRelations(multiLevelInput);
     assertEquals(1, result.size());
-    assertEquals(2, result.get(functionName).size());
-    
-    checkMapEntry(result, functionName, "whileWhile/inputTwo", "add/sumResult");
-    checkMapEntry(result, functionName, "whileWhile/inputOne", "add/sumResult");
+    assertEquals(3, result.get(functionName).size());
+
+    checkMapEntry(result, functionName, "whileWhile/inputTwo", "add/sumResult", "innerWhile");
+    checkMapEntry(result, functionName, "whileWhile/inputOne", "innerWhile/innerWhileRes", "while");
+    checkMapEntry(result, functionName, "whileWhile/inputOne", "add/sumResult", "innerWhile");
   }
 
   /**
@@ -33,10 +35,11 @@ class WhileInputReadTest {
    * @param furtherIterations the id of the data node used in all later iterations
    */
   void checkMapEntry(Map<String, Set<WhileInputReference>> result, String functionName,
-      String firstIteration, String furtherIterations) {
+      String firstIteration, String furtherIterations, String whileName) {
     assertTrue(result.containsKey(functionName));
     Set<WhileInputReference> value = result.get(functionName);
-    WhileInputReference inputReference = new WhileInputReference(firstIteration, furtherIterations);
+    WhileInputReference inputReference =
+        new WhileInputReference(firstIteration, furtherIterations, whileName);
     assertTrue(value.contains(inputReference));
   }
 

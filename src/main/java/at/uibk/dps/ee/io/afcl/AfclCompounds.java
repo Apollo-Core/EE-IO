@@ -20,7 +20,6 @@ import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
-import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
@@ -121,10 +120,10 @@ public final class AfclCompounds {
    */
   protected static void addDataIn(final EnactmentGraph graph, final Task function,
       final DataIns dataIn, final DataType expectedType) {
-    if (UtilsAfcl.isSrcString(AfclApiWrapper.getSource(dataIn))) {
-      AfclCompounds.addDataInDefault(graph, function, dataIn, expectedType);
-    } else {
+    if (UtilsAfcl.isConstantSrcString(AfclApiWrapper.getSource(dataIn))) {
       AfclCompounds.addDataInConstant(graph, function, dataIn, expectedType);
+    } else {
+      AfclCompounds.addDataInDefault(graph, function, dataIn, expectedType);
     }
   }
 
@@ -139,12 +138,11 @@ public final class AfclCompounds {
    */
   protected static void addDataInConstant(final EnactmentGraph graph, final Task function,
       final DataIns dataIn, final DataType expectedType) {
-    final String jsonKey = AfclApiWrapper.getName(dataIn);
+    final String constString = UtilsAfcl.getDataId(dataIn.getSource());
+    final String jsonKey = dataIn.getName();
     final DataType dataType = UtilsAfcl.getDataTypeForString(dataIn.getType());
-    final String jsonString = AfclApiWrapper.getSource(dataIn);
-    final JsonElement content = JsonParser.parseString(jsonString);
-    final String dataNodeId =
-        ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + jsonString;
+    final JsonElement content = JsonParser.parseString(constString);
+    final String dataNodeId = dataIn.getSource();
     final Task constantDataNode =
         PropertyServiceData.createConstantNode(dataNodeId, dataType, content);
     PropertyServiceDependency.addDataDependency(constantDataNode, function, jsonKey, graph);
@@ -352,6 +350,6 @@ public final class AfclCompounds {
     String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
         ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, null, workflow)
         : srcStringDataOut;
-    return new WhileInputReference(actualSrcDataIn, actualSrcDataOut);
+    return new WhileInputReference(actualSrcDataIn, actualSrcDataOut, whileFunction.getName());
   }
 }

@@ -7,6 +7,7 @@ import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
+import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.objects.Condition.CombinedWith;
 import at.uibk.dps.ee.model.objects.Condition.Operator;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
@@ -178,6 +179,16 @@ public final class UtilsAfcl {
   public static boolean isSrcString(final String srcString) {
     final String affix = ConstantsAfcl.SourceAffix;
     return srcString.contains(affix) && !srcString.startsWith(affix) && !srcString.endsWith(affix);
+  }
+  
+  /**
+   * Returns true iff the provided string describes constant data.
+   * 
+   * @param string the provided string
+   * @return true iff the provided string describes constant data
+   */
+  public static boolean isConstantSrcString(final String string) {
+    return string.startsWith(ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix);
   }
 
   /**

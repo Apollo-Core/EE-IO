@@ -83,12 +83,7 @@ public final class HierarchyLevellingAfcl {
       // case where we are looking for the src of the WF data out)
       for (DataOuts dataOut : whileCompound.getDataOuts()) {
         if (dataOut.getName().equals(dataName)) {
-          String srcString = dataOut.getSource();
-          if (!UtilsAfcl.isSrcString(srcString)) {
-            return srcString;
-          } else {
-            return getSrcDataId(dataOut.getSource(), funcWithSrc, workflow);
-          }
+          return afclSource;
         }
       }
     } else {
