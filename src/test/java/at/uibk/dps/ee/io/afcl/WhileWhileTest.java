@@ -25,9 +25,9 @@ class WhileWhileTest {
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
 
-    assertEquals(5, numFunc);
+    assertEquals(6, numFunc);
     assertEquals(13, numData);
-    assertEquals(23, edgeNum);
+    assertEquals(25, edgeNum);
   }
 
 

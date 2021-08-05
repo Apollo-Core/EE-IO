@@ -3,6 +3,7 @@ package at.uibk.dps.ee.io.afcl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.While;
 import at.uibk.dps.afcl.functions.objects.DataOuts;
@@ -11,11 +12,14 @@ import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.objects.Condition;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
+import at.uibk.dps.ee.model.properties.PropertyServiceData.NodeType;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
+import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtility;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtilityCondition;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtilityWhile;
 import net.sf.opendse.model.Communication;
 import net.sf.opendse.model.Task;
+import net.sf.opendse.model.properties.TaskPropertyService;
 
 /**
  * Static container for the methods necessary to create the enactment graph
@@ -49,11 +53,16 @@ public final class AfclCompoundsWhile {
     graph.addVertex(loopCounter);
     // create the contents of the loop body
     Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
+    Set<Task> whileDataNodesBeforeBody = getWhileStartNodesInGraph(graph);
     AfclCompounds.processTheLoopBody(whileCompound, graph, workflow);
     // create the condition
     Task stopDecision = createCondition(graph, whileCompound, workflow);
+    Set<Task> whileDataNodesAfterBody = getWhileStartNodesInGraph(graph);
+    whileDataNodesAfterBody.removeAll(whileDataNodesBeforeBody);
     Set<Task> loopBodyFunctions = AfclCompounds.getFunctionNodes(graph);
     loopBodyFunctions.removeAll(beforeAddingLoopBody);
+    whileDataNodesAfterBody
+        .forEach(nestedWhile -> enforceSequentialityNestedWhile(whileStart, nestedWhile, graph));
     // connect the functions to the while start
     loopBodyFunctions.forEach(bodyFunction -> PropertyServiceDependency
         .addDataDependency(whileStart, bodyFunction, ConstantsEEModel.JsonKeyWhileStart, graph));
@@ -68,6 +77,31 @@ public final class AfclCompoundsWhile {
     // and create a data node representing the final result of the while
     whileCompound.getDataOuts().forEach(dataOut -> processWhileDataOut(dataOut, graph,
         whileCompound.getName(), workflow, whileEnd));
+  }
+
+  /**
+   * Add a sequelizer node between the while start and the nested while start.
+   * 
+   * @param whileStart the while start node
+   * @param nestedWhileStart the nested while start node
+   * @param graph the enactment graph
+   */
+  protected static void enforceSequentialityNestedWhile(Task whileStart, Task nestedWhileStart,
+      EnactmentGraph graph) {
+    PropertyServiceFunctionUtility.addSequelizerNode(whileStart, nestedWhileStart, graph);
+    PropertyServiceData.resetContent(nestedWhileStart);
+  }
+
+  /**
+   * Returns the while start nodes contained in the given graph
+   * 
+   * @param graph the given graph
+   * @return the while start nodes in the given graph
+   */
+  protected static Set<Task> getWhileStartNodesInGraph(EnactmentGraph graph) {
+    return graph.getVertices().stream().filter(node -> TaskPropertyService.isCommunication(node))
+        .filter(dataNode -> PropertyServiceData.getNodeType(dataNode).equals(NodeType.WhileStart))
+        .collect(Collectors.toSet());
   }
 
   /**
