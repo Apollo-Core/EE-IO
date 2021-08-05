@@ -42,24 +42,25 @@ public final class AfclCompoundsWhile {
    * @param whileCompound the given while compound (AFCL)
    * @param workflow the AFCL workflow
    */
-  public static void addWhile(EnactmentGraph graph, While whileCompound, Workflow workflow) {
+  public static void addWhile(final EnactmentGraph graph, final While whileCompound,
+      final Workflow workflow) {
     // create the data node representing the while start
-    Task whileStart = PropertyServiceData.createWhileStart(whileCompound.getName());
+    final Task whileStart = PropertyServiceData.createWhileStart(whileCompound.getName());
     graph.addVertex(whileStart);
     // create the data node representing the loop counter
-    String counterId = whileCompound.getName() + ConstantsAfcl.SourceAffix
+    final String counterId = whileCompound.getName() + ConstantsAfcl.SourceAffix
         + ConstantsEEModel.WhileLoopCounterSuffix;
-    Task loopCounter = PropertyServiceData.createWhileCounter(counterId);
+    final Task loopCounter = PropertyServiceData.createWhileCounter(counterId);
     graph.addVertex(loopCounter);
     // create the contents of the loop body
-    Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
-    Set<Task> whileDataNodesBeforeBody = getWhileStartNodesInGraph(graph);
+    final Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
+    final Set<Task> whileDataNodesBeforeBody = getWhileStartNodesInGraph(graph);
     AfclCompounds.processTheLoopBody(whileCompound, graph, workflow);
     // create the condition
-    Task stopDecision = createCondition(graph, whileCompound, workflow);
-    Set<Task> whileDataNodesAfterBody = getWhileStartNodesInGraph(graph);
+    final Task stopDecision = createCondition(graph, whileCompound, workflow);
+    final Set<Task> whileDataNodesAfterBody = getWhileStartNodesInGraph(graph);
     whileDataNodesAfterBody.removeAll(whileDataNodesBeforeBody);
-    Set<Task> loopBodyFunctions = AfclCompounds.getFunctionNodes(graph);
+    final Set<Task> loopBodyFunctions = AfclCompounds.getFunctionNodes(graph);
     loopBodyFunctions.removeAll(beforeAddingLoopBody);
     whileDataNodesAfterBody
         .forEach(nestedWhile -> enforceSequentialityNestedWhile(whileStart, nestedWhile, graph));
@@ -67,7 +68,8 @@ public final class AfclCompoundsWhile {
     loopBodyFunctions.forEach(bodyFunction -> PropertyServiceDependency
         .addDataDependency(whileStart, bodyFunction, ConstantsEEModel.JsonKeyWhileStart, graph));
     // create the node representing the end of the while compound/iteration
-    Task whileEnd = PropertyServiceFunctionUtilityWhile.createWhileEndTask(whileStart, loopCounter);
+    final Task whileEnd =
+        PropertyServiceFunctionUtilityWhile.createWhileEndTask(whileStart, loopCounter);
     // connect the condition node and the loop counter to the while end
     PropertyServiceDependency.addDataDependency(loopCounter, whileEnd,
         ConstantsEEModel.JsonKeyWhileCounter, graph);
@@ -86,8 +88,8 @@ public final class AfclCompoundsWhile {
    * @param nestedWhileStart the nested while start node
    * @param graph the enactment graph
    */
-  protected static void enforceSequentialityNestedWhile(Task whileStart, Task nestedWhileStart,
-      EnactmentGraph graph) {
+  protected static void enforceSequentialityNestedWhile(final Task whileStart,
+      final Task nestedWhileStart, final EnactmentGraph graph) {
     PropertyServiceFunctionUtility.addSequelizerNode(whileStart, nestedWhileStart, graph);
     PropertyServiceData.resetContent(nestedWhileStart);
   }
@@ -98,7 +100,7 @@ public final class AfclCompoundsWhile {
    * @param graph the given graph
    * @return the while start nodes in the given graph
    */
-  protected static Set<Task> getWhileStartNodesInGraph(EnactmentGraph graph) {
+  protected static Set<Task> getWhileStartNodesInGraph(final EnactmentGraph graph) {
     return graph.getVertices().stream().filter(node -> TaskPropertyService.isCommunication(node))
         .filter(dataNode -> PropertyServiceData.getNodeType(dataNode).equals(NodeType.WhileStart))
         .collect(Collectors.toSet());
@@ -116,18 +118,18 @@ public final class AfclCompoundsWhile {
    * @param wf the (AFCL) workflow
    * @param whileEnd the task node modeling the end of the while compound
    */
-  protected static void processWhileDataOut(DataOuts dataOut, EnactmentGraph graph, String whileId,
-      Workflow wf, Task whileEnd) {
+  protected static void processWhileDataOut(final DataOuts dataOut, final EnactmentGraph graph,
+      final String whileId, final Workflow wf, final Task whileEnd) {
     // process/create the successor (overall while result)
-    String successorId = UtilsAfcl.getDataNodeId(whileId, dataOut.getName());
-    String jsonKey = dataOut.getName();
-    DataType dataType = UtilsAfcl.getDataTypeForString(dataOut.getType());
-    Task dataNode = AfclCompounds.assureDataNodePresence(successorId, dataType, graph);
+    final String successorId = UtilsAfcl.getDataNodeId(whileId, dataOut.getName());
+    final String jsonKey = dataOut.getName();
+    final DataType dataType = UtilsAfcl.getDataTypeForString(dataOut.getType());
+    final Task dataNode = AfclCompounds.assureDataNodePresence(successorId, dataType, graph);
     PropertyServiceData.annotateOriginalWhileEnd(dataNode, whileEnd.getId());
     PropertyServiceDependency.addDataDependency(whileEnd, dataNode, jsonKey, graph);
     // process the predecessor (data node from within the while loop body)
-    String srcString = dataOut.getSource();
-    Task functionResult = AfclCompounds.assureDataNodePresence(srcString, dataType, graph);
+    final String srcString = dataOut.getSource();
+    final Task functionResult = AfclCompounds.assureDataNodePresence(srcString, dataType, graph);
     PropertyServiceDependency.addDataDependency(functionResult, whileEnd, jsonKey, graph);
   }
 
@@ -141,17 +143,17 @@ public final class AfclCompoundsWhile {
    * @param workflow the afcl workflow
    * @return the data node with the decision whether to continue
    */
-  protected static Task createCondition(EnactmentGraph graph, While whileCompound,
-      Workflow workflow) {
-    String nodeId = whileCompound.getName() + ConstantsEEModel.KeywordSeparator1
+  protected static Task createCondition(final EnactmentGraph graph, final While whileCompound,
+      final Workflow workflow) {
+    final String nodeId = whileCompound.getName() + ConstantsEEModel.KeywordSeparator1
         + ConstantsEEModel.WhileConditionSuffix;
-    List<Condition> conditions = new ArrayList<>();
-    Task conditionNode =
+    final List<Condition> conditions = new ArrayList<>();
+    final Task conditionNode =
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
     whileCompound.getCondition().forEach(cond -> conditions.add(
         AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow, whileCompound)));
     PropertyServiceFunctionUtilityCondition.setConditions(conditionNode, conditions);
-    Task stopDecisionVariable = new Communication(whileCompound.getName()
+    final Task stopDecisionVariable = new Communication(whileCompound.getName()
         + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileConditionBoolSuffix);
     PropertyServiceDependency.addDataDependency(conditionNode, stopDecisionVariable,
         ConstantsEEModel.JsonKeyIfDecision, graph);

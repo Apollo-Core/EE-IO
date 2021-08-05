@@ -230,11 +230,11 @@ public final class AfclCompounds {
    * @param workflow the overall workflow
    * @param references the map of function while references
    */
-  protected static void processFunctionListRefs(List<Function> functions, Workflow workflow,
-      Map<String, Set<WhileInputReference>> references) {
-    for (Function function : functions) {
+  protected static void processFunctionListRefs(final List<Function> functions,
+      final Workflow workflow, final Map<String, Set<WhileInputReference>> references) {
+    for (final Function function : functions) {
       if (function instanceof AtomicFunction) {
-        Set<WhileInputReference> functionRefs =
+        final Set<WhileInputReference> functionRefs =
             processAtomicFunctionForWhileRefs((AtomicFunction) function, workflow);
         if (!functionRefs.isEmpty()) {
           references.put(function.getName(), functionRefs);
@@ -256,17 +256,17 @@ public final class AfclCompounds {
    * @param compound the processed compound
    * @param workflow the overall workflow
    */
-  protected static void processCompoundRefs(Map<String, Set<WhileInputReference>> references,
-      Compound compound, Workflow workflow) {
-    List<Function> functions = new ArrayList<>();
+  protected static void processCompoundRefs(final Map<String, Set<WhileInputReference>> references,
+      final Compound compound, final Workflow workflow) {
+    final List<Function> functions = new ArrayList<>();
     if (compound instanceof ParallelFor) {
-      ParallelFor parFor = (ParallelFor) compound;
+      final ParallelFor parFor = (ParallelFor) compound;
       functions.addAll(parFor.getLoopBody());
     } else if (compound instanceof While) {
-      While whileCom = (While) compound;
+      final While whileCom = (While) compound;
       functions.addAll(whileCom.getLoopBody());
     } else if (compound instanceof IfThenElse) {
-      IfThenElse ifComp = (IfThenElse) compound;
+      final IfThenElse ifComp = (IfThenElse) compound;
       functions.addAll(ifComp.getThenBranch());
       if (ifComp.getElseBranch() != null) {
         functions.addAll(ifComp.getElseBranch());
@@ -287,21 +287,21 @@ public final class AfclCompounds {
    * @return the set of the function's {@link WhileInputReference}s
    */
   protected static Set<WhileInputReference> processAtomicFunctionForWhileRefs(
-      AtomicFunction function, Workflow workflow) {
-    Set<WhileInputReference> result = new HashSet<>();
-    for (DataIns dataIn : function.getDataIns()) {
-      String source = dataIn.getSource();
+      final AtomicFunction function, final Workflow workflow) {
+    final Set<WhileInputReference> result = new HashSet<>();
+    for (final DataIns dataIn : function.getDataIns()) {
+      final String source = dataIn.getSource();
       if (!UtilsAfcl.isSrcString(source)) {
         continue;
       }
-      String srcFunctionName = UtilsAfcl.getProducerId(source);
+      final String srcFunctionName = UtilsAfcl.getProducerId(source);
       if (srcFunctionName.equals(workflow.getName())) {
         continue;
       }
-      Function srcFunction = AfclApiWrapper.getFunction(workflow, srcFunctionName);
+      final Function srcFunction = AfclApiWrapper.getFunction(workflow, srcFunctionName);
       if (srcFunction instanceof While) {
-        While whileFunc = (While) srcFunction;
-        String dataName = UtilsAfcl.getDataId(source);
+        final While whileFunc = (While) srcFunction;
+        final String dataName = UtilsAfcl.getDataId(source);
         result.add(getInputReference(whileFunc, dataName, workflow, function));
       }
     }
