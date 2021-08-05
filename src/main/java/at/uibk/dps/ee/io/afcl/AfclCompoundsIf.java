@@ -214,7 +214,7 @@ public final class AfclCompoundsIf {
    */
   protected static Condition addConditionNode(final EnactmentGraph graph,
       final at.uibk.dps.afcl.functions.objects.Condition condition, final Task conditionFunction,
-      final Workflow workflow, Function ifElse) {
+      final Workflow workflow, final Function ifElse) {
     final String firstInput =
         getConditionDataSrc(condition.getData1(), conditionFunction.getId(), workflow, ifElse);
     final String secondInput =
@@ -240,7 +240,7 @@ public final class AfclCompoundsIf {
    * @return the actual src string for the given condition data
    */
   protected static String getConditionDataSrc(final String conditionDataString,
-      final String conditionFunctionId, final Workflow workflow, Function ifElse) {
+      final String conditionFunctionId, final Workflow workflow, final Function ifElse) {
     if (UtilsAfcl.isSrcString(conditionDataString)) {
       return HierarchyLevellingAfcl.getSrcDataId(conditionDataString, ifElse, workflow);
     } else {

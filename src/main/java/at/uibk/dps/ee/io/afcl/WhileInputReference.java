@@ -52,29 +52,13 @@ public class WhileInputReference {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof WhileInputReference)) {
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    WhileInputReference other = (WhileInputReference) obj;
-    if (firstIterationInput == null) {
-      if (other.firstIterationInput != null)
-        return false;
-    } else if (!firstIterationInput.equals(other.firstIterationInput))
-      return false;
-    if (laterIterationsInput == null) {
-      if (other.laterIterationsInput != null)
-        return false;
-    } else if (!laterIterationsInput.equals(other.laterIterationsInput))
-      return false;
-    if (whileCompoundId == null) {
-      if (other.whileCompoundId != null)
-        return false;
-    } else if (!whileCompoundId.equals(other.whileCompoundId))
-      return false;
-    return true;
+    }
+    final WhileInputReference other = (WhileInputReference) obj;
+    return firstIterationInput.equals(other.firstIterationInput)
+        && laterIterationsInput.equals(other.laterIterationsInput)
+        && whileCompoundId.equals(other.whileCompoundId);
   }
 }

@@ -90,11 +90,12 @@ public final class HierarchyLevellingAfcl {
       for (final DataIns dataIn : whileCompound.getDataIns()) {
         if (dataIn.getName().equals(dataName)) {
           final String srcString = dataIn.getSource();
-          if (!UtilsAfcl.isSrcString(srcString)) {
+          if (UtilsAfcl.isSrcString(srcString)) {
+            return getSrcDataId(dataIn.getSource(), funcWithSrc, workflow);
+          } else {
             // Constant case
             return ConstantsEEModel.ConstantNodeAffix + "/" + srcString;
-          } else {
-            return getSrcDataId(dataIn.getSource(), funcWithSrc, workflow);
+
           }
         }
       }
@@ -115,7 +116,7 @@ public final class HierarchyLevellingAfcl {
    *         IF compound
    */
   protected static String getSrcDataIdIfThenElse(final String afclSource, final String dataName,
-      final Function ifFunction, final Workflow workflow, Function funcWithSrc) {
+      final Function ifFunction, final Workflow workflow, final Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(afclSource, ifFunction)) {
       // points to data in
       return getSrcDataId(AfclApiWrapper.getDataInSrc(ifFunction, dataName), funcWithSrc, workflow);
@@ -139,7 +140,7 @@ public final class HierarchyLevellingAfcl {
    */
   protected static String getSrcDataIdParallelFor(final ParallelFor parFor,
       final String sourceString, final String dataName, final Workflow workflow,
-      Function funcWithSrc) {
+      final Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(sourceString, parFor)) {
       // parallel for data in
       if (parFor.getIterators().contains(dataName)) {

@@ -61,8 +61,8 @@ public final class GraphGenerationAfcl {
    * @param eGraph the given enactment graph
    * @param whileReferences the while references read from the original workflow
    */
-  protected static void annotateWhileReferences(EnactmentGraph eGraph,
-      Map<String, Set<WhileInputReference>> whileReferences) {
+  protected static void annotateWhileReferences(final EnactmentGraph eGraph,
+      final Map<String, Set<WhileInputReference>> whileReferences) {
     whileReferences.forEach((functionName, referenceSet) -> referenceSet
         .forEach(reference -> annotateWhileReferenceFunction(eGraph, functionName, reference)));
   }

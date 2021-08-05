@@ -1,7 +1,6 @@
 package at.uibk.dps.ee.io.afcl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -197,7 +196,7 @@ public final class AfclCompounds {
       result = new Communication(dataNodeId);
       PropertyServiceData.setDataType(result, dataType);
     } else {
-      DataType actual = PropertyServiceData.getDataType(result);
+      final DataType actual = PropertyServiceData.getDataType(result);
       if (!actual.equals(dataType)) {
         if (actual.equals(DataType.Collection) && dataType.equals(DataType.Number)) {
           return result;
