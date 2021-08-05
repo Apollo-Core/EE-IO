@@ -144,7 +144,7 @@ public final class AfclCompoundsWhile {
   protected static Task createCondition(EnactmentGraph graph, While whileCompound,
       Workflow workflow) {
     String nodeId = whileCompound.getName() + ConstantsEEModel.KeywordSeparator1
-        + ConstantsEEModel.WhileStopConditionSuffix;
+        + ConstantsEEModel.WhileConditionSuffix;
     List<Condition> conditions = new ArrayList<>();
     Task conditionNode =
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
@@ -152,7 +152,7 @@ public final class AfclCompoundsWhile {
         AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow, whileCompound)));
     PropertyServiceFunctionUtilityCondition.setConditions(conditionNode, conditions);
     Task stopDecisionVariable = new Communication(whileCompound.getName()
-        + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileStopConditionBooleanSuffix);
+        + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileConditionBoolSuffix);
     PropertyServiceDependency.addDataDependency(conditionNode, stopDecisionVariable,
         ConstantsEEModel.JsonKeyIfDecision, graph);
     return stopDecisionVariable;

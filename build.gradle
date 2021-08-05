@@ -36,7 +36,7 @@ dependencies {
   }else {
     implementation 'com.github.Apollo-Core:EE-Core:master-SNAPSHOT'
     implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
-    implementation 'com.github.Apollo-Core:EE-Model:8a3b2e2966'
+    implementation 'com.github.Apollo-Core:EE-Model:seqFor-SNAPSHOT'
   }
 
   implementation 'com.github.ApolloCEC:socketUtils:-SNAPSHOT'
