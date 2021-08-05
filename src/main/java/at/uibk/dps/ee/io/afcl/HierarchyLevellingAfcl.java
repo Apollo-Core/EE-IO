@@ -1,5 +1,6 @@
 package at.uibk.dps.ee.io.afcl;
 
+import java.util.Optional;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.functions.AtomicFunction;
@@ -77,31 +78,63 @@ public final class HierarchyLevellingAfcl {
     if (dataName.equals(ConstantsEEModel.WhileLoopCounterSuffix)) {
       return afclSource;
     }
+    Optional<String> optRes = Optional.empty();
     if (funcWithSrc == null || !AfclApiWrapper.contains(whileCompound, funcWithSrc)) {
       // case where the request comes from outside the while compound (inclusive the
       // case where we are looking for the src of the WF data out)
-      for (final DataOuts dataOut : whileCompound.getDataOuts()) {
-        if (dataOut.getName().equals(dataName)) {
-          return afclSource;
-        }
+      if (dataOutWithNameExists(whileCompound, dataName)) {
+        optRes = Optional.of(afclSource);
       }
     } else {
       // case where the requesting function is within the while compound
-      for (final DataIns dataIn : whileCompound.getDataIns()) {
-        if (dataIn.getName().equals(dataName)) {
-          final String srcString = dataIn.getSource();
-          if (UtilsAfcl.isSrcString(srcString)) {
-            return getSrcDataId(dataIn.getSource(), funcWithSrc, workflow);
-          } else {
-            // Constant case
-            return ConstantsEEModel.ConstantNodeAffix + "/" + srcString;
+      optRes = getDataIdFromWhileDataIn(whileCompound, dataName, funcWithSrc, workflow);
+    }
+    return optRes.orElseThrow(() -> new IllegalStateException("The src string " + afclSource
+        + " does not point to any valid port of the while compound " + whileCompound.getName()));
+  }
 
-          }
+  /**
+   * Finds the data id of the source of a function which is within the while
+   * compound.
+   * 
+   * @param whileCompound the while compound
+   * @param dataName the data name
+   * @param funcWithSrc the function within the while compound
+   * @param workflow the workflow
+   * @return the data id of the source of a function which is within the while
+   *         compound
+   */
+  protected static Optional<String> getDataIdFromWhileDataIn(While whileCompound, String dataName,
+      Function funcWithSrc, Workflow workflow) {
+    Optional<String> result = Optional.empty();
+    for (final DataIns dataIn : whileCompound.getDataIns()) {
+      if (dataIn.getName().equals(dataName)) {
+        final String srcString = dataIn.getSource();
+        if (UtilsAfcl.isSrcString(srcString)) {
+          result = Optional.of(getSrcDataId(dataIn.getSource(), funcWithSrc, workflow));
+        } else {
+          // Constant case
+          result = Optional.of(ConstantsEEModel.ConstantNodeAffix + "/" + srcString);
         }
       }
     }
-    throw new IllegalStateException("The src string " + afclSource
-        + " does not point to any valid port of the while compound " + whileCompound.getName());
+    return result;
+  }
+
+  /**
+   * Checks whether the given while compound has a data out with the given name.
+   * 
+   * @param whileCompound the while compound
+   * @param dataName the name
+   * @return true iff the given name is found
+   */
+  protected static boolean dataOutWithNameExists(final While whileCompound, final String dataName) {
+    for (final DataOuts dataOut : whileCompound.getDataOuts()) {
+      if (dataOut.getName().equals(dataName)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
