@@ -89,6 +89,7 @@ public final class AfclCompoundsWhile {
     String jsonKey = dataOut.getName();
     DataType dataType = UtilsAfcl.getDataTypeForString(dataOut.getType());
     Task dataNode = AfclCompounds.assureDataNodePresence(successorId, dataType, graph);
+    PropertyServiceData.annotateOriginalWhileEnd(dataNode, whileEnd.getId());
     PropertyServiceDependency.addDataDependency(whileEnd, dataNode, jsonKey, graph);
     // process the predecessor (data node from within the while loop body)
     String srcString = dataOut.getSource();
@@ -113,8 +114,8 @@ public final class AfclCompoundsWhile {
     List<Condition> conditions = new ArrayList<>();
     Task conditionNode =
         PropertyServiceFunctionUtilityCondition.createConditionEvaluation(nodeId, conditions);
-    whileCompound.getCondition().forEach(cond -> conditions
-        .add(AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow, whileCompound)));
+    whileCompound.getCondition().forEach(cond -> conditions.add(
+        AfclCompoundsIf.addConditionNode(graph, cond, conditionNode, workflow, whileCompound)));
     PropertyServiceFunctionUtilityCondition.setConditions(conditionNode, conditions);
     Task stopDecisionVariable = new Communication(whileCompound.getName()
         + ConstantsEEModel.KeywordSeparator1 + ConstantsEEModel.WhileStopConditionBooleanSuffix);
