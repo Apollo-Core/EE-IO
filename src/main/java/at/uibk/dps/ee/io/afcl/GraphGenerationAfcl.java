@@ -42,7 +42,7 @@ public final class GraphGenerationAfcl {
    */
   public static EnactmentGraph generateEnactmentGraph(final Workflow afclWorkflow) {
     // remember the while references for the workflow
-    Map<String, Set<WhileInputReference>> whileReferences =
+    final Map<String, Set<WhileInputReference>> whileReferences =
         AfclCompounds.parseWhileRelations(afclWorkflow);
     final EnactmentGraph result = new EnactmentGraph();
     addWfInputNodes(result, AfclApiWrapper.getDataIns(afclWorkflow),
@@ -74,22 +74,22 @@ public final class GraphGenerationAfcl {
    * @param functionName the function name
    * @param inputReference the processed input reference
    */
-  protected static void annotateWhileReferenceFunction(EnactmentGraph graph, String functionName,
-      WhileInputReference inputReference) {
-    Task function = graph.getVertex(functionName);
+  protected static void annotateWhileReferenceFunction(final EnactmentGraph graph,
+      final String functionName, final WhileInputReference inputReference) {
+    final Task function = graph.getVertex(functionName);
     if (function == null) {
       throw new IllegalStateException(
           "Function " + functionName + " while-referenced, but not in graph.");
     }
     // find the correct in Edge and annotate it
-    Task furtherIterationDataNode =
+    final Task furtherIterationDataNode =
         Optional.ofNullable(graph.getVertex(inputReference.getLaterIterationsInput()))
             .orElseThrow(() -> new IllegalStateException("Later while reference "
                 + inputReference.getLaterIterationsInput() + " not in the graph"));
-    String firstIterId = UtilsAfcl.isSrcString(inputReference.getFirstIterationInput())
+    final String firstIterId = UtilsAfcl.isSrcString(inputReference.getFirstIterationInput())
         ? inputReference.getFirstIterationInput()
         : ConstantsEEModel.ConstantNodeAffix + "/" + inputReference.getFirstIterationInput();
-    for (Dependency inEdge : graph.getInEdges(function)) {
+    for (final Dependency inEdge : graph.getInEdges(function)) {
       if (graph.getSource(inEdge).getId().equals(firstIterId)) {
         PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode,
             inputReference.getWhileCompoundId());

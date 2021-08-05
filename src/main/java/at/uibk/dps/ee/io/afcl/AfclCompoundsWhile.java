@@ -77,8 +77,8 @@ public final class AfclCompoundsWhile {
         ConstantsEEModel.JsonKeyWhileDecision, graph);
     // for each data out, connect the stuff within the loop body to the while end,
     // and create a data node representing the final result of the while
-    whileCompound.getDataOuts().forEach(dataOut -> processWhileDataOut(dataOut, graph,
-        whileCompound.getName(), workflow, whileEnd));
+    whileCompound.getDataOuts()
+        .forEach(dataOut -> processWhileDataOut(dataOut, graph, whileCompound.getName(), whileEnd));
   }
 
   /**
@@ -115,11 +115,10 @@ public final class AfclCompoundsWhile {
    * @param dataOut the processed (AFCL) data out
    * @param graph the enactment graph
    * @param whileId the name of the whole while compound
-   * @param wf the (AFCL) workflow
    * @param whileEnd the task node modeling the end of the while compound
    */
   protected static void processWhileDataOut(final DataOuts dataOut, final EnactmentGraph graph,
-      final String whileId, final Workflow wf, final Task whileEnd) {
+      final String whileId, final Task whileEnd) {
     // process/create the successor (overall while result)
     final String successorId = UtilsAfcl.getDataNodeId(whileId, dataOut.getName());
     final String jsonKey = dataOut.getName();

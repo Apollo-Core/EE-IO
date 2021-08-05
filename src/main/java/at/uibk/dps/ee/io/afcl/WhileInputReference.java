@@ -11,8 +11,17 @@ public class WhileInputReference {
   protected final String laterIterationsInput;
   protected final String whileCompoundId;
 
-  public WhileInputReference(String firstIterationInput, String laterIterationsInput,
-      String whileCompoundId) {
+  /**
+   * Constructor method
+   * 
+   * @param firstIterationInput reference to data node used as src for the first
+   *        iteration
+   * @param laterIterationsInput reference to data node used as src for later
+   *        iterations
+   * @param whileCompoundId the id of the processed while compound
+   */
+  public WhileInputReference(final String firstIterationInput, final String laterIterationsInput,
+      final String whileCompoundId) {
     super();
     this.firstIterationInput = firstIterationInput;
     this.laterIterationsInput = laterIterationsInput;

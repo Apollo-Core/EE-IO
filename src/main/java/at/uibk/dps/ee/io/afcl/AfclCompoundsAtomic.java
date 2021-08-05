@@ -53,9 +53,9 @@ public final class AfclCompoundsAtomic {
    * 
    * @param dataIn the data in
    */
-  protected static void correctDataIn(DataIns dataIn) {
+  protected static void correctDataIn(final DataIns dataIn) {
     if (!UtilsAfcl.isSrcString(dataIn.getSource())) {
-      String corrected =
+      final String corrected =
           ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + dataIn.getSource();
       dataIn.setSource(corrected);
     }

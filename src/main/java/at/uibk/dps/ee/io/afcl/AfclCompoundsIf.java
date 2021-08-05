@@ -147,7 +147,7 @@ public final class AfclCompoundsIf {
    * @param ifElse the if compound
    */
   protected static void checkDataOutIfSrc(final DataOuts dataOut, final EnactmentGraph graph,
-      final Workflow workflow, IfThenElse ifElse) {
+      final Workflow workflow, final IfThenElse ifElse) {
     final String srcString = AfclApiWrapper.getSource(dataOut);
     if (!UtilsAfcl.isIfOutSrc(srcString)) {
       throw new IllegalArgumentException("The src of data out " + AfclApiWrapper.getName(dataOut)

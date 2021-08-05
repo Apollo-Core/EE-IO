@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -216,8 +217,9 @@ public final class AfclCompounds {
    * @param workFlow the given workflow
    * @return a map mapping the function IDs to their {@link WhileInputReference}s
    */
-  protected static Map<String, Set<WhileInputReference>> parseWhileRelations(Workflow workFlow) {
-    Map<String, Set<WhileInputReference>> resultMap = new HashMap<>();
+  protected static Map<String, Set<WhileInputReference>> parseWhileRelations(
+      final Workflow workFlow) {
+    final Map<String, Set<WhileInputReference>> resultMap = new ConcurrentHashMap<>();
     processFunctionListRefs(workFlow.getWorkflowBody(), workFlow, resultMap);
     return resultMap;
   }
@@ -319,35 +321,36 @@ public final class AfclCompounds {
    * @return the while input reference for the given data in of the given while
    *         function
    */
-  protected static WhileInputReference getInputReference(While whileFunction, String dataName,
-      Workflow workflow, Function innerFunction) {
+  protected static WhileInputReference getInputReference(final While whileFunction,
+      final String dataName, final Workflow workflow, final Function innerFunction) {
     // find the actual source of the While's data in
     Optional<DataIns> dataInOpt = Optional.empty();
-    for (DataIns dataIn : whileFunction.getDataIns()) {
+    for (final DataIns dataIn : whileFunction.getDataIns()) {
       if (dataIn.getName().equals(dataName)) {
         dataInOpt = Optional.of(dataIn);
         break;
       }
     }
-    DataIns srcDataIn = dataInOpt.orElseThrow(() -> new IllegalArgumentException("While function "
-        + whileFunction.getName() + " does not have a data in with the name " + dataName));
-    String srcStringDataIn = srcDataIn.getSource();
-    String actualSrcDataIn = UtilsAfcl.isSrcString(srcStringDataIn)
+    final DataIns srcDataIn =
+        dataInOpt.orElseThrow(() -> new IllegalArgumentException("While function "
+            + whileFunction.getName() + " does not have a data in with the name " + dataName));
+    final String srcStringDataIn = srcDataIn.getSource();
+    final String actualSrcDataIn = UtilsAfcl.isSrcString(srcStringDataIn)
         ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataIn, innerFunction, workflow)
         : srcStringDataIn;
     // find the actual source of the While's data out
     Optional<DataOuts> dataOutOpt = Optional.empty();
-    for (DataOuts dataOut : whileFunction.getDataOuts()) {
+    for (final DataOuts dataOut : whileFunction.getDataOuts()) {
       if (dataOut.getName().equals(dataName)) {
         dataOutOpt = Optional.of(dataOut);
         break;
       }
     }
-    DataOuts srcDataOut =
+    final DataOuts srcDataOut =
         dataOutOpt.orElseThrow(() -> new IllegalArgumentException("While function "
             + whileFunction.getName() + " does not have a data out with the name " + dataName));
-    String srcStringDataOut = srcDataOut.getSource();
-    String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
+    final String srcStringDataOut = srcDataOut.getSource();
+    final String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
         ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, null, workflow)
         : srcStringDataOut;
     return new WhileInputReference(actualSrcDataIn, actualSrcDataOut, whileFunction.getName());

@@ -186,14 +186,15 @@ public final class AfclCompoundsParallelFor {
   protected static void attachAggregatedDataOut(final DataOuts dataOut, final EnactmentGraph graph,
       final ParallelFor parallelFor, final Workflow workflow) {
     // create the aggregation function
-    String parallelForName = parallelFor.getName();
+    final String parallelForName = parallelFor.getName();
     final String aggregationId = parallelForName + ConstantsEEModel.KeywordSeparator1
         + ConstantsEEModel.FuncNameUtilityAggregation + ConstantsEEModel.KeywordSeparator1
         + dataOut.getName();
     final Task aggregationNode = PropertyServiceFunctionDataFlowCollections
         .createCollectionDataFlowTask(aggregationId, OperationType.Aggregation, parallelForName);
     // find the source and connect the aggregation node to it
-    final String srcString = HierarchyLevellingAfcl.getSrcDataId(dataOut.getSource(), parallelFor, workflow);
+    final String srcString =
+        HierarchyLevellingAfcl.getSrcDataId(dataOut.getSource(), parallelFor, workflow);
     final Task dataToAggregate = Optional.ofNullable(graph.getVertex(srcString)).orElseThrow(
         () -> new IllegalStateException("Cannot find data to aggregate: " + srcString));
     PropertyServiceDependency.addDataDependency(dataToAggregate, aggregationNode,

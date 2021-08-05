@@ -32,9 +32,8 @@ public final class HierarchyLevellingAfcl {
    * @param workflow the workflow built based on the afcl file
    * @return the data id in the flattened graph
    */
-  public static String getSrcDataId(final String afclSource, Function funcWithSrc,
+  public static String getSrcDataId(final String afclSource, final Function funcWithSrc,
       final Workflow workflow) {
-
     final String funcName = UtilsAfcl.getProducerId(afclSource);
     if (funcName.equals(workflow.getName())) {
       // pointing to a root node
@@ -72,8 +71,8 @@ public final class HierarchyLevellingAfcl {
    * @return id of the correct data node described by the given src string
    *         (pointing to a while compound)
    */
-  protected static String getDataIdWhile(final String afclSource, String dataName,
-      While whileCompound, Workflow workflow, Function funcWithSrc) {
+  protected static String getDataIdWhile(final String afclSource, final String dataName,
+      final While whileCompound, final Workflow workflow, final Function funcWithSrc) {
     // looking for the while counter
     if (dataName.equals(ConstantsEEModel.WhileLoopCounterSuffix)) {
       return afclSource;
@@ -81,16 +80,16 @@ public final class HierarchyLevellingAfcl {
     if (funcWithSrc == null || !AfclApiWrapper.contains(whileCompound, funcWithSrc)) {
       // case where the request comes from outside the while compound (inclusive the
       // case where we are looking for the src of the WF data out)
-      for (DataOuts dataOut : whileCompound.getDataOuts()) {
+      for (final DataOuts dataOut : whileCompound.getDataOuts()) {
         if (dataOut.getName().equals(dataName)) {
           return afclSource;
         }
       }
     } else {
       // case where the requesting function is within the while compound
-      for (DataIns dataIn : whileCompound.getDataIns()) {
+      for (final DataIns dataIn : whileCompound.getDataIns()) {
         if (dataIn.getName().equals(dataName)) {
-          String srcString = dataIn.getSource();
+          final String srcString = dataIn.getSource();
           if (!UtilsAfcl.isSrcString(srcString)) {
             // Constant case
             return ConstantsEEModel.ConstantNodeAffix + "/" + srcString;
