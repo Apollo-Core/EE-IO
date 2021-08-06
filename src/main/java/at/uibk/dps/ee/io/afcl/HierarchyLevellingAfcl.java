@@ -104,8 +104,8 @@ public final class HierarchyLevellingAfcl {
    * @return the data id of the source of a function which is within the while
    *         compound
    */
-  protected static Optional<String> getDataIdFromWhileDataIn(While whileCompound, String dataName,
-      Function funcWithSrc, Workflow workflow) {
+  protected static Optional<String> getDataIdFromWhileDataIn(final While whileCompound,
+      final String dataName, final Function funcWithSrc, final Workflow workflow) {
     Optional<String> result = Optional.empty();
     for (final DataIns dataIn : whileCompound.getDataIns()) {
       if (dataIn.getName().equals(dataName)) {
