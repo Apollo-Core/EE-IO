@@ -290,7 +290,7 @@ public final class AfclCompounds {
   protected static Set<WhileInputReference> processAtomicFunctionForWhileRefs(
       final AtomicFunction function, final Workflow workflow) {
     final Set<WhileInputReference> result = new HashSet<>();
-    for (final DataIns dataIn : function.getDataIns()) {
+    for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
       final String source = dataIn.getSource();
       if (!UtilsAfcl.isSrcString(source)) {
         continue;
