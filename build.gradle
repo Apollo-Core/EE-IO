@@ -49,6 +49,9 @@ dependencies {
 
   // gson to define the format of the exchanged messages
   implementation 'com.google.code.gson:gson:2.8.6'
+  
+  // vertx
+  implementation 'io.vertx:vertx-core:4.1.0'
 
   // dependency to Opt4J
   //implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'

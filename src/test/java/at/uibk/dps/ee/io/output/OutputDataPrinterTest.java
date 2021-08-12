@@ -24,7 +24,7 @@ public class OutputDataPrinterTest {
     listAppender.start();
     logger.addAppender(listAppender);
 
-    tested.handleOutputData(testInput);
+    tested.handleSuccess(testInput);
     String expected1 = "Workflow executed correctly.";
     String expected2 = "Enactment result: " + testInput.toString();
 
@@ -33,5 +33,6 @@ public class OutputDataPrinterTest {
     assertEquals(Level.INFO, logList.get(0).getLevel());
     assertEquals(expected2, logList.get(1).getFormattedMessage());
     assertEquals(Level.INFO, logList.get(1).getLevel());
+
   }
 }
