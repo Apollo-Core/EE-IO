@@ -9,6 +9,9 @@ import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtilityCollections.CollectionOperation;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class AfclCollectionOperationsTest {
 
   @Test
@@ -17,6 +20,21 @@ public class AfclCollectionOperationsTest {
     List<String> result =
         AfclCollectionOperations.getSubstrings(input, CollectionOperation.ElementIndex);
     assertEquals(7, result.size());
+  }
+  
+  @Test
+  void testIsCollectionConstraint() {
+    PropertyConstraint constraintMock = mock(PropertyConstraint.class);
+    when(constraintMock.getName()).thenReturn(ConstantsAfcl.constraintNameBlock);
+    assertTrue(AfclCollectionOperations.isCollectionConstraint(constraintMock));
+    when(constraintMock.getName()).thenReturn(ConstantsAfcl.constraintNameElementIndex);
+    assertTrue(AfclCollectionOperations.isCollectionConstraint(constraintMock));
+    when(constraintMock.getName()).thenReturn(ConstantsAfcl.constraintNameReplicate);
+    assertTrue(AfclCollectionOperations.isCollectionConstraint(constraintMock));
+    when(constraintMock.getName()).thenReturn(ConstantsAfcl.constraintNameSplit);
+    assertTrue(AfclCollectionOperations.isCollectionConstraint(constraintMock));
+    when(constraintMock.getName()).thenReturn("blabla");
+    assertFalse(AfclCollectionOperations.isCollectionConstraint(constraintMock));
   }
 
   @Test

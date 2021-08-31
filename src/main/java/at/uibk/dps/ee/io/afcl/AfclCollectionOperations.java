@@ -236,6 +236,7 @@ public final class AfclCollectionOperations {
     final String name = constraint.getName();
     return name.equals(ConstantsAfcl.constraintNameBlock)
         || name.equals(ConstantsAfcl.constraintNameElementIndex)
-        || name.equals(ConstantsAfcl.constraintNameReplicate);
+        || name.equals(ConstantsAfcl.constraintNameReplicate)
+        || name.equals(ConstantsAfcl.constraintNameSplit);
   }
 }
