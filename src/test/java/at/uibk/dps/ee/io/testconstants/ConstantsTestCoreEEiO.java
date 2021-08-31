@@ -93,4 +93,8 @@ public class ConstantsTestCoreEEiO {
 
   // constants for the ee starter
   public static final String configFileModuleRead = "src/test/resources/testConfigs/testConfig.xml";
+  
+  // constants for testing the file reading
+  public static final String filePathReadTestFile = "src/test/resources/other/mockFileToBytes.yml";
+  public static final byte[] expectedByteValue = { 52, 50, 10 };
 }

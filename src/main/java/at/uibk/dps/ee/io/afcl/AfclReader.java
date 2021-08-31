@@ -11,7 +11,6 @@ import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.afcl.utils.Utils;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.graph.EnactmentGraphProvider;
-import at.uibk.dps.socketutils.UtilsSocket;
 
 /**
  * The {@link AfclReader} generates the {@link EnactmentGraph} based on a
@@ -34,7 +33,7 @@ public class AfclReader implements EnactmentGraphProvider {
   public AfclReader(
       @Constant(value = "filePath", namespace = AfclReader.class) final String filePath) {
     try {
-      final byte[] wfData = UtilsSocket.readFileToBytes(filePath);
+      final byte[] wfData = UtilsAfcl.readFileToBytes(filePath);
       this.enactmentGraph = generateEnactmentGraph(wfData);
     } catch (IOException ioExc) {
       throw new IllegalStateException("IOException when reading the WF from the path: " + filePath,

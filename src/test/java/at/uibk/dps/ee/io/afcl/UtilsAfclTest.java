@@ -4,14 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
 import at.uibk.dps.ee.io.afcl.UtilsAfcl.CompoundType;
+import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
 
 public class UtilsAfclTest {
@@ -93,5 +95,16 @@ public class UtilsAfclTest {
     propList.add(propConst);
     atom.setProperties(propList);
     assertTrue(UtilsAfcl.isResourceSetAtomFunc(atom));
+  }
+
+  @Test
+  public void testReadFileToBytes() {
+    final byte[] result;
+    try {
+      result = UtilsAfcl.readFileToBytes(ConstantsTestCoreEEiO.filePathReadTestFile);
+      assertTrue(Arrays.equals(ConstantsTestCoreEEiO.expectedByteValue, result));
+    } catch (IOException exc) {
+      fail("IOException when testing file to byte reading.");
+    }
   }
 }

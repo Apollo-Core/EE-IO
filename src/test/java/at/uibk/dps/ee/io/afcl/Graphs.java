@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
-import at.uibk.dps.socketutils.UtilsSocket;
 
 /**
  * Convenience class to generate the test graphs.
@@ -76,7 +75,7 @@ public class Graphs {
 
   protected static Workflow getWf(String fileName) {
     try {
-      byte[] data = UtilsSocket.readFileToBytes(fileName);
+      byte[] data = UtilsAfcl.readFileToBytes(fileName);
       return AfclReader.bytes2Workflow(data);
     } catch (IOException ioExc) {
       fail("IOException when getting the SeqPar workflow");

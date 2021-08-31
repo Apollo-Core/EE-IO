@@ -1,5 +1,11 @@
 package at.uibk.dps.ee.io.afcl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.functions.AtomicFunction;
@@ -272,5 +278,23 @@ public final class UtilsAfcl {
   protected static String getIfOutSubString(final String srcString, final boolean first) {
     return first ? srcString.split(ConstantsAfcl.IfFuncSeparator)[0]
         : srcString.split(ConstantsAfcl.IfFuncSeparator)[1];
+  }
+  
+  /**
+   * Reads a file at the specified path and converts it to an array of bytes.
+   * 
+   * @param filePath the path to the file
+   * @return the byte array
+   * @throws IOException
+   */
+  public static byte[] readFileToBytes(final String filePath) throws IOException {
+      final File file = new File(filePath);
+      final byte[] result = new byte[(int) file.length()];
+      try (InputStream fis = Files.newInputStream(Paths.get(filePath))) {
+          try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+              bis.read(result, 0, result.length);
+          }
+      }
+      return result;
   }
 }
