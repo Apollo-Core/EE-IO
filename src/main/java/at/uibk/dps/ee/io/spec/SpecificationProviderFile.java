@@ -12,6 +12,7 @@ import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.graph.EnactmentGraphProvider;
 import at.uibk.dps.ee.model.graph.EnactmentSpecification;
+import at.uibk.dps.ee.model.graph.MappingsConcurrent;
 import at.uibk.dps.ee.model.graph.ResourceGraph;
 import at.uibk.dps.ee.model.graph.ResourceGraphProvider;
 import at.uibk.dps.ee.model.graph.SpecificationProvider;
@@ -23,7 +24,6 @@ import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
 import at.uibk.dps.ee.model.properties.PropertyServiceResourceServerless;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunction.UsageType;
 import net.sf.opendse.model.Mapping;
-import net.sf.opendse.model.Mappings;
 import net.sf.opendse.model.Resource;
 import net.sf.opendse.model.Task;
 import net.sf.opendse.model.properties.TaskPropertyService;
@@ -40,7 +40,7 @@ public class SpecificationProviderFile implements SpecificationProvider {
 
   protected final EnactmentGraphProvider enactmentGraphProvider;
   protected final ResourceGraphProvider resourceGraphProvider;
-  protected final Mappings<Task, Resource> mappings;
+  protected final MappingsConcurrent mappings;
   protected final EnactmentSpecification specification;
 
   /**
@@ -53,14 +53,13 @@ public class SpecificationProviderFile implements SpecificationProvider {
    */
   @Inject
   public SpecificationProviderFile(final EnactmentGraphProvider enactmentGraphProvider,
-      final ResourceGraphProvider resourceGraphProvider,
-      @Constant(value = "filePath",
+      final ResourceGraphProvider resourceGraphProvider, @Constant(value = "filePath",
           namespace = ResourceGraphProviderFile.class) final String filePath) {
     this.enactmentGraphProvider = enactmentGraphProvider;
     this.resourceGraphProvider = resourceGraphProvider;
     this.mappings = createMappings(getEnactmentGraph(), getResourceGraph(), filePath);
-    this.specification =
-        new EnactmentSpecification(getEnactmentGraph(), getResourceGraph(), getMappings());
+    this.specification = new EnactmentSpecification(getEnactmentGraph(), getResourceGraph(),
+        getMappings(), ConstantsEEModel.SpecIdDefault);
   }
 
   @Override
@@ -74,7 +73,7 @@ public class SpecificationProviderFile implements SpecificationProvider {
   }
 
   @Override
-  public final Mappings<Task, Resource> getMappings() {
+  public final MappingsConcurrent getMappings() {
     return mappings;
   }
 
@@ -87,14 +86,14 @@ public class SpecificationProviderFile implements SpecificationProvider {
    * @param filePath the file path to the resource information
    * @return the mappings connected the eGraph and the rGraph
    */
-  protected final Mappings<Task, Resource> createMappings(final EnactmentGraph eGraph,
+  protected final MappingsConcurrent createMappings(final EnactmentGraph eGraph,
       final ResourceGraph rGraph, final String filePath) {
-    final Mappings<Task, Resource> result = new Mappings<>();
+    final MappingsConcurrent result = new MappingsConcurrent();
     final ResourceInformationJsonFile resInfo = ResourceInformationJsonFile.readFromFile(filePath);
     eGraph.getVertices().stream().filter(task -> TaskPropertyService.isProcess(task))
         .filter(task -> PropertyServiceFunction.getUsageType(task).equals(UsageType.User))
         .flatMap(task -> getMappingsForTask(task, resInfo, rGraph).stream())
-        .forEach(mapping -> result.add(mapping));
+        .forEach(mapping -> result.addMapping(mapping));
     return result;
   }
 
