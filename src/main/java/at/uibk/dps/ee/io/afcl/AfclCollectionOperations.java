@@ -67,9 +67,8 @@ public final class AfclCollectionOperations {
    * @param graph the enactment graph
    * @return the node with the processed data (from the one operation)
    */
-  protected static Task modelCollectionOperation(final PropertyConstraint contraint,
-      final String jsonKey, final Task originalData, final EnactmentGraph graph,
-      final DataType finalDataType) {
+  static Task modelCollectionOperation(final PropertyConstraint contraint, final String jsonKey,
+      final Task originalData, final EnactmentGraph graph, final DataType finalDataType) {
     // generate the id string of the data to create and check whether already in
     // graph
     final String subCollectionString = contraint.getValue();
@@ -119,7 +118,7 @@ public final class AfclCollectionOperations {
    * @param operationNode the function node
    * @param graph the enactment graph
    */
-  protected static void attachOperationInput(final String srcString, final Task operationNode,
+  static void attachOperationInput(final String srcString, final Task operationNode,
       final EnactmentGraph graph) {
     final Task inputData = AfclCompounds.assureDataNodePresence(srcString, DataType.Number, graph);
     PropertyServiceDependency.addDataDependency(inputData, operationNode, srcString, graph);
@@ -134,7 +133,7 @@ public final class AfclCollectionOperations {
    * @param operation the operation that the subcollection string describes
    * @return list of strings, each of them describing a number
    */
-  protected static List<String> getSubstrings(final String subcollectionString,
+  static List<String> getSubstrings(final String subcollectionString,
       final CollectionOperation operation) {
     switch (operation) {
       case Replicate:
@@ -153,14 +152,14 @@ public final class AfclCollectionOperations {
   /**
    * See the getSubstrings method. This one is used for replicate and split.
    */
-  protected static List<String> getSubstringsReplicateSplit(final String subcollectionString) {
+  static List<String> getSubstringsReplicateSplit(final String subcollectionString) {
     return Arrays.asList(subcollectionString);
   }
 
   /**
    * See the getSubstrings method. This one is used for element index.
    */
-  protected static List<String> getSubstringsEIdx(final String subcollectionString) {
+  static List<String> getSubstringsEIdx(final String subcollectionString) {
     final List<String> result = new ArrayList<>();
     if (subcollectionString.contains(ConstantsAfcl.constraintSeparatorEIdxOuter)) {
       for (final String innerSubString : subcollectionString
@@ -176,7 +175,7 @@ public final class AfclCollectionOperations {
   /**
    * See the getSubstrings method. This one is used for block.
    */
-  protected static List<String> getSubstringsBlock(final String subcollectionString) {
+  static List<String> getSubstringsBlock(final String subcollectionString) {
     if (!subcollectionString.contains(ConstantsAfcl.constraintSeparatorBlock)) {
       throw new IllegalArgumentException(
           "Incorrect Block Constraint Argument: " + subcollectionString);
@@ -189,10 +188,10 @@ public final class AfclCollectionOperations {
    * Splits the given string describing one Eidx access into a list of substrings,
    * each of which is a number, emtpy, or a src string.
    * 
-   * @param innerEidxString
-   * @return
+   * @param innerEidxString the string describing the eidx operation
+   * @return the list of substrings
    */
-  protected static List<String> getInnerEidxSubstrings(final String innerEidxString) {
+  static List<String> getInnerEidxSubstrings(final String innerEidxString) {
     if (innerEidxString.contains(ConstantsAfcl.constraintSeparatorEIdxInner)) {
       return Arrays.asList(innerEidxString.split(ConstantsAfcl.constraintSeparatorEIdxInner));
     } else {
@@ -207,8 +206,7 @@ public final class AfclCollectionOperations {
    * @param operation the operation type
    * @return true if the given substring is legal.
    */
-  protected static boolean isLegalEntryString(final String entryString,
-      final CollectionOperation operation) {
+  static boolean isLegalEntryString(final String entryString, final CollectionOperation operation) {
     if (UtilsAfcl.isSrcString(entryString)) {
       return true;
     }
@@ -241,7 +239,7 @@ public final class AfclCollectionOperations {
    * @param constraint the provided constraint.
    * @return true if the provided constraint relates to collection operations
    */
-  protected static boolean isCollectionConstraint(final PropertyConstraint constraint) {
+  static boolean isCollectionConstraint(final PropertyConstraint constraint) {
     final String name = constraint.getName();
     return name.equals(ConstantsAfcl.constraintNameBlock)
         || name.equals(ConstantsAfcl.constraintNameElementIndex)

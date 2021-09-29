@@ -81,8 +81,8 @@ public final class AfclCompounds {
    * @param graph the enactment graph
    * @param workflow the workflow
    */
-  protected static void processTheLoopBody(final LoopCompound loopCompound,
-      final EnactmentGraph graph, final Workflow workflow) {
+  static void processTheLoopBody(final LoopCompound loopCompound, final EnactmentGraph graph,
+      final Workflow workflow) {
     // process the loop body
     for (final Function function : loopCompound.getLoopBody()) {
       if (function instanceof AtomicFunction) {
@@ -99,7 +99,7 @@ public final class AfclCompounds {
    * @param graph the given graph
    * @return a set of all function nodes in the given graph
    */
-  protected static Set<Task> getFunctionNodes(final EnactmentGraph graph) {
+  static Set<Task> getFunctionNodes(final EnactmentGraph graph) {
     final Set<Task> result = new HashSet<>();
     for (final Task task : graph) {
       if (TaskPropertyService.isProcess(task)) {
@@ -118,8 +118,8 @@ public final class AfclCompounds {
    * @param dataIn the given data in (representing a constant input)
    * @param expectedType the data type we expect the node to have
    */
-  protected static void addDataIn(final EnactmentGraph graph, final Task function,
-      final DataIns dataIn, final DataType expectedType) {
+  static void addDataIn(final EnactmentGraph graph, final Task function, final DataIns dataIn,
+      final DataType expectedType) {
     if (UtilsAfcl.isConstantSrcString(AfclApiWrapper.getSource(dataIn))) {
       AfclCompounds.addDataInConstant(graph, function, dataIn, expectedType);
     } else {
@@ -136,7 +136,7 @@ public final class AfclCompounds {
    * @param dataIn the given data in (representing a constant input)
    * @param expectedType the datatype we expect the node to have
    */
-  protected static void addDataInConstant(final EnactmentGraph graph, final Task function,
+  static void addDataInConstant(final EnactmentGraph graph, final Task function,
       final DataIns dataIn, final DataType expectedType) {
     final String constString = UtilsAfcl.getDataId(dataIn.getSource());
     final String jsonKey = dataIn.getName();
@@ -157,7 +157,7 @@ public final class AfclCompounds {
    * @param dataIn the given data in
    * @param expectedType the type expected in the node we are looking for
    */
-  protected static void addDataInDefault(final EnactmentGraph graph, final Task function,
+  static void addDataInDefault(final EnactmentGraph graph, final Task function,
       final DataIns dataIn, final DataType expectedType) {
     // create/retrieve the data node
     final String dataNodeId = AfclApiWrapper.getSource(dataIn);
@@ -189,7 +189,7 @@ public final class AfclCompounds {
    * @param graph the enactment graph
    * @return the created/retrieved node
    */
-  protected static Task assureDataNodePresence(final String dataNodeId, final DataType dataType,
+  static Task assureDataNodePresence(final String dataNodeId, final DataType dataType,
       final EnactmentGraph graph) {
     if (graph.containsVertex(dataNodeId)) {
       Task result = graph.getVertex(dataNodeId);
@@ -217,8 +217,7 @@ public final class AfclCompounds {
    * @param workFlow the given workflow
    * @return a map mapping the function IDs to their {@link WhileInputReference}s
    */
-  protected static Map<String, Set<WhileInputReference>> parseWhileRelations(
-      final Workflow workFlow) {
+  static Map<String, Set<WhileInputReference>> parseWhileRelations(final Workflow workFlow) {
     final Map<String, Set<WhileInputReference>> resultMap = new ConcurrentHashMap<>();
     processFunctionListRefs(workFlow.getWorkflowBody(), workFlow, resultMap);
     return resultMap;
@@ -232,8 +231,8 @@ public final class AfclCompounds {
    * @param workflow the overall workflow
    * @param references the map of function while references
    */
-  protected static void processFunctionListRefs(final List<Function> functions,
-      final Workflow workflow, final Map<String, Set<WhileInputReference>> references) {
+  static void processFunctionListRefs(final List<Function> functions, final Workflow workflow,
+      final Map<String, Set<WhileInputReference>> references) {
     for (final Function function : functions) {
       if (function instanceof AtomicFunction) {
         final Set<WhileInputReference> functionRefs =
@@ -258,7 +257,7 @@ public final class AfclCompounds {
    * @param compound the processed compound
    * @param workflow the overall workflow
    */
-  protected static void processCompoundRefs(final Map<String, Set<WhileInputReference>> references,
+  static void processCompoundRefs(final Map<String, Set<WhileInputReference>> references,
       final Compound compound, final Workflow workflow) {
     final List<Function> functions = new ArrayList<>();
     if (compound instanceof ParallelFor) {
@@ -288,8 +287,8 @@ public final class AfclCompounds {
    * @param workflow the overall workflow
    * @return the set of the function's {@link WhileInputReference}s
    */
-  protected static Set<WhileInputReference> processAtomicFunctionForWhileRefs(
-      final AtomicFunction function, final Workflow workflow) {
+  static Set<WhileInputReference> processAtomicFunctionForWhileRefs(final AtomicFunction function,
+      final Workflow workflow) {
     final Set<WhileInputReference> result = new HashSet<>();
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
       final String source = dataIn.getSource();
@@ -321,8 +320,8 @@ public final class AfclCompounds {
    * @return the while input reference for the given data in of the given while
    *         function
    */
-  protected static WhileInputReference getInputReference(final While whileFunction,
-      final String dataName, final Workflow workflow, final Function innerFunction) {
+  static WhileInputReference getInputReference(final While whileFunction, final String dataName,
+      final Workflow workflow, final Function innerFunction) {
     // find the actual source of the While's data in
     Optional<DataIns> dataInOpt = Optional.empty();
     for (final DataIns dataIn : whileFunction.getDataIns()) {

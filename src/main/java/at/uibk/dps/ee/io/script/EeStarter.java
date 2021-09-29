@@ -62,7 +62,7 @@ public class EeStarter extends Starter {
    * @param inputFile the file with the input
    * @param workflowFile the file describing the WF
    * @param typeMappingsFile the file describing the type mappings
-   * @throws Exception
+   * @throws Exception file read exceptions
    */
   protected void executeConfigFileFileLocations(final String configFile, final String inputFile,
       final String workflowFile, final String typeMappingsFile) throws Exception {
@@ -84,7 +84,7 @@ public class EeStarter extends Starter {
    * specified by the configFile.
    * 
    * @param configFile the config file
-   * @throws Exception
+   * @throws Exception file read exceptions
    */
   protected void executeConfigFile(final String configFile) throws Exception {
     final Set<Module> modules = getModulesFromConfigFile(configFile);
@@ -95,7 +95,7 @@ public class EeStarter extends Starter {
    * Runs the EE script with the provided modules.
    * 
    * @param modules the provided modules.
-   * @throws Exception
+   * @throws Exception run time exceptions
    */
   protected void runWithModules(final Set<Module> modules) throws Exception {
     final Task task = new EeTask();

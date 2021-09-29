@@ -4,6 +4,10 @@ buildscript {
   }
 }
 
+plugins {
+  id("net.ltgt.errorprone") version "2.0.2"
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
@@ -36,7 +40,7 @@ dependencies {
   }else {
     implementation 'com.github.Apollo-Core:EE-Core:master-SNAPSHOT'
     implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
-    implementation 'com.github.Apollo-Core:EE-Model:main-SNAPSHOT'
+    implementation 'com.github.Apollo-Core:EE-Model:a4e86a1c20'
   }
 
   // dependencies to projects from other parts of Apollo
@@ -61,6 +65,8 @@ dependencies {
   testImplementation(platform('org.junit:junit-bom:5.7.2'))
   testImplementation('org.junit.jupiter:junit-jupiter')
   testCompile group: 'org.mockito',     name: 'mockito-core',     version: '3.4.4'
+  
+  errorprone("com.google.errorprone:error_prone_core:2.9.0")
 }
 
 test {

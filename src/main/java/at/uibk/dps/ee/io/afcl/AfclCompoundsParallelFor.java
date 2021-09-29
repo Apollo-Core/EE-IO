@@ -45,7 +45,7 @@ public final class AfclCompoundsParallelFor {
    * @param parallelFor the parallelFor compound
    * @param workflow the afcl workflow
    */
-  protected static void addParallelFor(final EnactmentGraph graph, final ParallelFor parallelFor,
+  static void addParallelFor(final EnactmentGraph graph, final ParallelFor parallelFor,
       final Workflow workflow) {
 
     // process the iterators and add the distribute function
@@ -112,8 +112,8 @@ public final class AfclCompoundsParallelFor {
    * @param distributionNode the distribution node
    * @param subRoot the sub graph root
    */
-  protected static void connectSubGraphRootToDistNode(final EnactmentGraph graph,
-      final Task distributionNode, final Task subRoot) {
+  static void connectSubGraphRootToDistNode(final EnactmentGraph graph, final Task distributionNode,
+      final Task subRoot) {
     final String seqId =
         distributionNode.getId() + ConstantsEEModel.KeywordSeparator1 + subRoot.getId();
     final Task seqNode = PropertyServiceData.createSequentialityNode(seqId);
@@ -135,8 +135,8 @@ public final class AfclCompoundsParallelFor {
    *         but do not have a connection to the distribution node (or other tasks
    *         from the subgraph)
    */
-  protected static Set<Task> getSubGraphRoots(final EnactmentGraph graph,
-      final Set<Task> subGraphTasks, final Task distributionNode) {
+  static Set<Task> getSubGraphRoots(final EnactmentGraph graph, final Set<Task> subGraphTasks,
+      final Task distributionNode) {
     final Set<Task> result = new HashSet<>(subGraphTasks);
     result.removeIf(task -> !isSubGraphRoot(task, subGraphTasks, graph, distributionNode));
     return result;
@@ -155,7 +155,7 @@ public final class AfclCompoundsParallelFor {
    *         connections to either the distribution node or any other task within
    *         the subgraph
    */
-  protected static boolean isSubGraphRoot(final Task task, final Set<Task> subGraphTasks,
+  static boolean isSubGraphRoot(final Task task, final Set<Task> subGraphTasks,
       final EnactmentGraph graph, final Task distributionNode) {
     for (final Task predecessor : graph.getPredecessors(task)) {
       // iterate the comm predecessors
@@ -181,9 +181,10 @@ public final class AfclCompoundsParallelFor {
    * 
    * @param dataOut the processed data out
    * @param graph the enactment graph
-   * @param parallelForName the name of the parallelFor function
+   * @param parallelFor the parFor compound
+   * @param workflow the workflow
    */
-  protected static void attachAggregatedDataOut(final DataOuts dataOut, final EnactmentGraph graph,
+  static void attachAggregatedDataOut(final DataOuts dataOut, final EnactmentGraph graph,
       final ParallelFor parallelFor, final Workflow workflow) {
     // create the aggregation function
     final String parallelForName = parallelFor.getName();
@@ -218,7 +219,7 @@ public final class AfclCompoundsParallelFor {
    * @param iterators the iterator list
    * @return true iff the given list specifies a number-driven execution
    */
-  protected static boolean isIntIteratorList(final List<String> iterators) {
+  static boolean isIntIteratorList(final List<String> iterators) {
     if (iterators.size() == 1) {
       return isIntIterator(iterators.get(0));
     } else if (iterators.size() > 1) {
@@ -237,11 +238,10 @@ public final class AfclCompoundsParallelFor {
    * a collection to iterate over.
    * 
    * @param iterator the given iterator
-   * @param parallelForName the name of the parallel for
    * @return true iff the given iterator defines the iteration number rather than
    *         a collection to iterate over
    */
-  protected static boolean isIntIterator(final String iterator) {
+  static boolean isIntIterator(final String iterator) {
     return UtilsIO.readableAsInt(iterator) || UtilsAfcl.isSrcString(iterator);
   }
 
@@ -254,7 +254,7 @@ public final class AfclCompoundsParallelFor {
    * @param dataIns the list of data ins
    * @param distributionNode the node modeling the distribution operation.
    */
-  protected static void processIterator(final String iterator, final EnactmentGraph graph,
+  static void processIterator(final String iterator, final EnactmentGraph graph,
       final List<DataIns> dataIns, final Task distributionNode, final String parallelForName) {
     // connect the data to distribute
     if (UtilsAfcl.isSrcString(iterator)) {

@@ -48,7 +48,7 @@ public final class AfclCompoundsIf {
    * @param ifCompound the if compound to add
    * @param workflow the afcl workflow object
    */
-  protected static void addIf(final EnactmentGraph graph, final IfThenElse ifCompound,
+  static void addIf(final EnactmentGraph graph, final IfThenElse ifCompound,
       final Workflow workflow) {
     // create and add the condition function, get the condition variable
     final Task conditionVariable = addConditionFunction(graph, ifCompound, workflow);
@@ -71,7 +71,7 @@ public final class AfclCompoundsIf {
    * @param decisionVariable the decision variable
    * @param isThen true iff modeling the then branch
    */
-  protected static void addIfBranch(final EnactmentGraph graph, final IfThenElse ifCompound,
+  static void addIfBranch(final EnactmentGraph graph, final IfThenElse ifCompound,
       final Workflow workflow, final Task decisionVariable, final boolean isThen) {
     // remember all function nodes in the graph now
     final Set<Task> tasksBeforeAdding = AfclCompounds.getFunctionNodes(graph);
@@ -107,14 +107,15 @@ public final class AfclCompoundsIf {
    * @param workflow the afcl workflow
    * @param conditionVariable the data node containing the decision variable
    */
-  protected static void addChoiceFunction(final EnactmentGraph graph, final DataOuts dataOut,
+  static void addChoiceFunction(final EnactmentGraph graph, final DataOuts dataOut,
       final IfThenElse ifCompound, final Workflow workflow, final Task conditionVariable) {
     checkDataOutIfSrc(dataOut, graph, workflow, ifCompound);
     final String srcString = AfclApiWrapper.getSource(dataOut);
     final String firstSrc = UtilsAfcl.getFirstSubStringIfOut(srcString);
     final String secondSrc = UtilsAfcl.getSecondSubStringIfOut(srcString);
     final Task firstSrcNode = graph.getVertex(firstSrc);
-    final Task secondSrcNode = graph.containsVertex(secondSrc) ? graph.getVertex(secondSrc) : graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifCompound, workflow));  
+    final Task secondSrcNode = graph.containsVertex(secondSrc) ? graph.getVertex(secondSrc)
+        : graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifCompound, workflow));
     // create the choice function node
     final String funcNodeId = firstSrc + ConstantsEEModel.EarliestArrivalFuncAffix + secondSrc;
     final Task choiceFunction = PropertyServiceFunctionDataFlow.createDataFlowFunction(funcNodeId,
@@ -145,7 +146,7 @@ public final class AfclCompoundsIf {
    * @param graph the hitherto created enactment graph
    * @param ifElse the if compound
    */
-  protected static void checkDataOutIfSrc(final DataOuts dataOut, final EnactmentGraph graph,
+  static void checkDataOutIfSrc(final DataOuts dataOut, final EnactmentGraph graph,
       final Workflow workflow, final IfThenElse ifElse) {
     final String srcString = AfclApiWrapper.getSource(dataOut);
     if (!UtilsAfcl.isIfOutSrc(srcString)) {
@@ -181,8 +182,8 @@ public final class AfclCompoundsIf {
    * @param workflow the afcl workflow object
    * @return the data node modeling the condition variable
    */
-  protected static Task addConditionFunction(final EnactmentGraph graph,
-      final IfThenElse ifCompound, final Workflow workflow) {
+  static Task addConditionFunction(final EnactmentGraph graph, final IfThenElse ifCompound,
+      final Workflow workflow) {
     final String nodeId = AfclApiWrapper.getName(ifCompound);
     final List<Condition> conditions = new ArrayList<>();
     final Task funcNode =
@@ -211,7 +212,7 @@ public final class AfclCompoundsIf {
    * @param condition the afcl condition
    * @param conditionFunction the task modeling the condition function
    */
-  protected static Condition addConditionNode(final EnactmentGraph graph,
+  static Condition addConditionNode(final EnactmentGraph graph,
       final at.uibk.dps.afcl.functions.objects.Condition condition, final Task conditionFunction,
       final Workflow workflow, final Function ifElse) {
     final String firstInput =
@@ -238,7 +239,7 @@ public final class AfclCompoundsIf {
    * @param workflow the processed workflow
    * @return the actual src string for the given condition data
    */
-  protected static String getConditionDataSrc(final String conditionDataString,
+  static String getConditionDataSrc(final String conditionDataString,
       final String conditionFunctionId, final Workflow workflow, final Function ifElse) {
     if (UtilsAfcl.isSrcString(conditionDataString)) {
       return HierarchyLevellingAfcl.getSrcDataId(conditionDataString, ifElse, workflow);
@@ -257,7 +258,7 @@ public final class AfclCompoundsIf {
    * @param dataType the data type
    * @return the created data node
    */
-  protected static Task addConditionIn(final EnactmentGraph graph, final Task conditionFunction,
+  static Task addConditionIn(final EnactmentGraph graph, final Task conditionFunction,
       final String dataString, final DataType dataType) {
     if (UtilsAfcl.isSrcString(dataString)) {
       return addConditionInDefault(graph, conditionFunction, dataString, dataType);
@@ -276,8 +277,8 @@ public final class AfclCompoundsIf {
    * @param dataType the expected data type
    * @return the created data node
    */
-  protected static Task addConditionInConstant(final EnactmentGraph graph,
-      final Task conditionFunction, final String dataString, final DataType dataType) {
+  static Task addConditionInConstant(final EnactmentGraph graph, final Task conditionFunction,
+      final String dataString, final DataType dataType) {
     final String dataNodeId = conditionFunction.getId() + ConstantsAfcl.SourceAffix + dataString;
     final String jsonKey = dataNodeId;
     final JsonElement content = JsonParser.parseString(dataString);
@@ -297,8 +298,8 @@ public final class AfclCompoundsIf {
    * @param dataType the expected data type
    * @return the created data node
    */
-  protected static Task addConditionInDefault(final EnactmentGraph graph,
-      final Task conditionFunction, final String dataString, final DataType dataType) {
+  static Task addConditionInDefault(final EnactmentGraph graph, final Task conditionFunction,
+      final String dataString, final DataType dataType) {
     final String jsonKey = dataString;
     final Task result = AfclCompounds.assureDataNodePresence(dataString, dataType, graph);
     PropertyServiceDependency.addDataDependency(result, conditionFunction, jsonKey, graph);

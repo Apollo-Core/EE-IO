@@ -121,8 +121,8 @@ public class SpecificationProviderFile implements SpecificationProvider {
    * annotates it with properties following the resource entry.
    * 
    * @param task the mapping source
-   * @param res the mapping target
    * @param resEntry the resource entry describing the attributes
+   * @param resGraph the resource graph
    * @return a mapping between the given task and the given resources and
    *         annotates it with properties following the resource entry.
    */

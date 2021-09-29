@@ -32,7 +32,7 @@ public final class AfclCompoundsAtomic {
    * @param graph the graph
    * @param atomicFunc the provided atomic function
    */
-  protected static void addAtomicFunctionWfLevel(final EnactmentGraph graph,
+  static void addAtomicFunctionWfLevel(final EnactmentGraph graph,
       final AtomicFunction atomicFunc) {
     final Task atomicTask = createTaskFromAtomicFunction(atomicFunc);
     // process the inputs
@@ -53,7 +53,7 @@ public final class AfclCompoundsAtomic {
    * 
    * @param dataIn the data in
    */
-  protected static void correctDataIn(final DataIns dataIn) {
+  static void correctDataIn(final DataIns dataIn) {
     if (!UtilsAfcl.isSrcString(dataIn.getSource())) {
       final String corrected =
           ConstantsEEModel.ConstantNodeAffix + ConstantsAfcl.SourceAffix + dataIn.getSource();
@@ -70,8 +70,8 @@ public final class AfclCompoundsAtomic {
    * @param atomic the atomic function
    * @param workflow the afcl workflow object
    */
-  protected static void addAtomicFunctionSubWfLevel(final EnactmentGraph graph,
-      final AtomicFunction atomic, final Workflow workflow) {
+  static void addAtomicFunctionSubWfLevel(final EnactmentGraph graph, final AtomicFunction atomic,
+      final Workflow workflow) {
     correctAtomicDataIns(atomic, workflow);
     addAtomicFunctionWfLevel(graph, atomic);
   }
@@ -84,7 +84,7 @@ public final class AfclCompoundsAtomic {
    * @param function the node modeling the atomic function with given data out
    * @param dataOut the given data out
    */
-  protected static void addDataOut(final EnactmentGraph graph, final Task function,
+  static void addDataOut(final EnactmentGraph graph, final Task function,
       final DataOutsAtomic dataOut) {
     final String functionName = function.getId();
     final String jsonKey = AfclApiWrapper.getName(dataOut);
@@ -102,8 +102,7 @@ public final class AfclCompoundsAtomic {
    * @param function the atomic function
    * @param workflow the afcl workflow object
    */
-  protected static void correctAtomicDataIns(final AtomicFunction function,
-      final Workflow workflow) {
+  static void correctAtomicDataIns(final AtomicFunction function, final Workflow workflow) {
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
       final String srcString = dataIn.getSource();
       if (!UtilsAfcl.isSrcString(srcString)) {
@@ -121,7 +120,7 @@ public final class AfclCompoundsAtomic {
    * @param atomFunc the given atomic function
    * @return the task node modeling the given atomic function.
    */
-  protected static Task createTaskFromAtomicFunction(final AtomicFunction atomFunc) {
+  static Task createTaskFromAtomicFunction(final AtomicFunction atomFunc) {
     final String funcId = atomFunc.getName();
     final String functionTypeString = atomFunc.getType();
     return PropertyServiceFunctionUser.createUserTask(funcId, functionTypeString);

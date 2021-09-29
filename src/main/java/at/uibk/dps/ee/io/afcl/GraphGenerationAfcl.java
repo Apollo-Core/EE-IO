@@ -61,7 +61,7 @@ public final class GraphGenerationAfcl {
    * @param eGraph the given enactment graph
    * @param whileReferences the while references read from the original workflow
    */
-  protected static void annotateWhileReferences(final EnactmentGraph eGraph,
+  static void annotateWhileReferences(final EnactmentGraph eGraph,
       final Map<String, Set<WhileInputReference>> whileReferences) {
     whileReferences.forEach((functionName, referenceSet) -> referenceSet
         .forEach(reference -> annotateWhileReferenceFunction(eGraph, functionName, reference)));
@@ -74,8 +74,8 @@ public final class GraphGenerationAfcl {
    * @param functionName the function name
    * @param inputReference the processed input reference
    */
-  protected static void annotateWhileReferenceFunction(final EnactmentGraph graph,
-      final String functionName, final WhileInputReference inputReference) {
+  static void annotateWhileReferenceFunction(final EnactmentGraph graph, final String functionName,
+      final WhileInputReference inputReference) {
     final Task function = graph.getVertex(functionName);
     if (function == null) {
       throw new IllegalStateException(
@@ -107,7 +107,7 @@ public final class GraphGenerationAfcl {
    * @param graph the enactment graph
    * @param afclWorkflow the given workflow
    */
-  protected static void addWfFunctions(final EnactmentGraph graph, final Workflow afclWorkflow) {
+  static void addWfFunctions(final EnactmentGraph graph, final Workflow afclWorkflow) {
     for (final Function function : AfclApiWrapper.getWfBody(afclWorkflow)) {
       AfclCompounds.addFunctionCompound(graph, function, afclWorkflow);
     }
@@ -121,7 +121,7 @@ public final class GraphGenerationAfcl {
    * @param dataOuts the list of afcl data outs
    * @param workflow the afcl workflow object
    */
-  protected static void annotateWfOutputs(final EnactmentGraph graph, final List<DataOuts> dataOuts,
+  static void annotateWfOutputs(final EnactmentGraph graph, final List<DataOuts> dataOuts,
       final Workflow workflow) {
     for (final DataOuts dataOut : dataOuts) {
       correctDataOut(dataOut, workflow);
@@ -135,7 +135,7 @@ public final class GraphGenerationAfcl {
    * @param dataOut the given data out
    * @param workflow the afcl wokflow object
    */
-  protected static void correctDataOut(final DataOuts dataOut, final Workflow workflow) {
+  static void correctDataOut(final DataOuts dataOut, final Workflow workflow) {
     final String srcString = dataOut.getSource();
     final String correctSrc = HierarchyLevellingAfcl.getSrcDataId(srcString, null, workflow);
     dataOut.setSource(correctSrc);
@@ -147,7 +147,7 @@ public final class GraphGenerationAfcl {
    * @param graph the enactment graph
    * @param dataOut the data out
    */
-  protected static void annotateWfOutput(final EnactmentGraph graph, final DataOuts dataOut) {
+  static void annotateWfOutput(final EnactmentGraph graph, final DataOuts dataOut) {
     final String source = dataOut.getSource();
     if (graph.getVertex(source) == null) {
       throw new IllegalStateException(
@@ -169,7 +169,7 @@ public final class GraphGenerationAfcl {
    * @param dataIns the list of data ins of the workflow
    * @param wfName the name of the workflow
    */
-  protected static void addWfInputNodes(final EnactmentGraph graph, final List<DataIns> dataIns,
+  static void addWfInputNodes(final EnactmentGraph graph, final List<DataIns> dataIns,
       final String wfName) {
     for (final DataIns dataIn : dataIns) {
       graph.addVertex(generateWfInputDataNode(dataIn, wfName));
@@ -183,7 +183,7 @@ public final class GraphGenerationAfcl {
    * @param wfName the name of the wf
    * @return the data node modeling the provided input of the WF
    */
-  protected static Task generateWfInputDataNode(final DataIns dataIn, final String wfName) {
+  static Task generateWfInputDataNode(final DataIns dataIn, final String wfName) {
     final String dataId = dataIn.getName();
     final String nodeId = UtilsAfcl.getDataNodeId(wfName, dataId);
     final String jsonKey = AfclApiWrapper.getSource(dataIn);

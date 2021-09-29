@@ -72,7 +72,7 @@ public final class HierarchyLevellingAfcl {
    * @return id of the correct data node described by the given src string
    *         (pointing to a while compound)
    */
-  protected static String getDataIdWhile(final String afclSource, final String dataName,
+  static String getDataIdWhile(final String afclSource, final String dataName,
       final While whileCompound, final Workflow workflow, final Function funcWithSrc) {
     // looking for the while counter
     if (dataName.equals(ConstantsEEModel.WhileLoopCounterSuffix)) {
@@ -104,8 +104,8 @@ public final class HierarchyLevellingAfcl {
    * @return the data id of the source of a function which is within the while
    *         compound
    */
-  protected static Optional<String> getDataIdFromWhileDataIn(final While whileCompound,
-      final String dataName, final Function funcWithSrc, final Workflow workflow) {
+  static Optional<String> getDataIdFromWhileDataIn(final While whileCompound, final String dataName,
+      final Function funcWithSrc, final Workflow workflow) {
     Optional<String> result = Optional.empty();
     for (final DataIns dataIn : whileCompound.getDataIns()) {
       if (dataIn.getName().equals(dataName)) {
@@ -128,7 +128,7 @@ public final class HierarchyLevellingAfcl {
    * @param dataName the name
    * @return true iff the given name is found
    */
-  protected static boolean dataOutWithNameExists(final While whileCompound, final String dataName) {
+  static boolean dataOutWithNameExists(final While whileCompound, final String dataName) {
     for (final DataOuts dataOut : whileCompound.getDataOuts()) {
       if (dataOut.getName().equals(dataName)) {
         return true;
@@ -143,12 +143,12 @@ public final class HierarchyLevellingAfcl {
    * 
    * @param afclSource the afcl source string
    * @param dataName the name of the data the src string points to
-   * @param function the if compound
+   * @param ifFunction the if compound
    * @param workflow the workflow
    * @return the corrected string for the case where the afcl string points to an
    *         IF compound
    */
-  protected static String getSrcDataIdIfThenElse(final String afclSource, final String dataName,
+  static String getSrcDataIdIfThenElse(final String afclSource, final String dataName,
       final Function ifFunction, final Workflow workflow, final Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(afclSource, ifFunction)) {
       // points to data in
@@ -171,9 +171,8 @@ public final class HierarchyLevellingAfcl {
    * @return the correct source string for the case where the afcl string points
    *         to a parallel for compound
    */
-  protected static String getSrcDataIdParallelFor(final ParallelFor parFor,
-      final String sourceString, final String dataName, final Workflow workflow,
-      final Function funcWithSrc) {
+  static String getSrcDataIdParallelFor(final ParallelFor parFor, final String sourceString,
+      final String dataName, final Workflow workflow, final Function funcWithSrc) {
     if (AfclApiWrapper.pointsToInput(sourceString, parFor)) {
       // parallel for data in
       if (parFor.getIterators().contains(dataName)) {
@@ -196,8 +195,7 @@ public final class HierarchyLevellingAfcl {
    * @param atomic the given atomic function
    * @param dataOutName the name of the data out
    */
-  protected static void checkAtomicFunctionOut(final AtomicFunction atomic,
-      final String dataOutName) {
+  static void checkAtomicFunctionOut(final AtomicFunction atomic, final String dataOutName) {
     for (final DataOutsAtomic dataOut : AfclApiWrapper.getDataOuts(atomic)) {
       if (dataOutName.equals(dataOut.getName())) {
         return;

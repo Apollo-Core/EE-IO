@@ -45,7 +45,7 @@ public class AfclReader implements EnactmentGraphProvider {
    * Constructor which is provided with the byte representation of the workflow
    * file.
    * 
-   * @param workflowData
+   * @param workflowData byte array describing the workflow
    */
   public AfclReader(final byte[] workflowData) {
     this.enactmentGraph = generateEnactmentGraph(workflowData);

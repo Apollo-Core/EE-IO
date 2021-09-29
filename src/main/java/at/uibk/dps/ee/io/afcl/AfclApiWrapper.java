@@ -44,9 +44,6 @@ public final class AfclApiWrapper {
    * non-atomic function. Returns false if it points to an output. Throws an
    * exception in all other cases.
    * 
-   * @param sourceString
-   * @param func
-   * @return
    */
   public static boolean pointsToInput(String sourceString, Function func) {
     String funcName = UtilsAfcl.getProducerId(sourceString);
@@ -116,7 +113,7 @@ public final class AfclApiWrapper {
         "Function " + func.getName() + " does not have a data in with name " + dOutName);
   }
 
-  protected static Function searchInsideFunction(Function function, String name) {
+  static Function searchInsideFunction(Function function, String name) {
     if (function.getName().equals(name)) {
       return function;
     }
@@ -247,7 +244,7 @@ public final class AfclApiWrapper {
     }
   }
 
-  protected static List<DataOuts> getDataOuts(ParallelFor parallelFor) {
+  static List<DataOuts> getDataOuts(ParallelFor parallelFor) {
     return Optional.ofNullable(parallelFor.getDataOuts()).orElse(new ArrayList<>());
   }
 

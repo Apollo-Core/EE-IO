@@ -33,6 +33,7 @@
     	<exclude name="FieldNamingConventions"/>
     	<exclude name="AvoidProtectedMethodInFinalClassNotExtending"/>
     	<exclude name="AtLeastOneConstructor"/>
+    	<exclude name="CommentDefaultAccessModifier"/>
     </rule>
     <rule ref="category/java/design.xml">
     	<exclude name="LawOfDemeter"/>

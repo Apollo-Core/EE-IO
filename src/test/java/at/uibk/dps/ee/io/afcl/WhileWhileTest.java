@@ -17,8 +17,6 @@ class WhileWhileTest {
    */
   @Test
   void testNumbers() {
-    assertTrue((result instanceof EnactmentGraph));
-
     int numFunc = (int) result.getVertices().stream()
         .filter(node -> TaskPropertyService.isProcess(node)).count();
     int numData = (int) result.getVertices().stream()

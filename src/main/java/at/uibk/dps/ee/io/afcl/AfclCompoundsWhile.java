@@ -88,8 +88,8 @@ public final class AfclCompoundsWhile {
    * @param nestedWhileStart the nested while start node
    * @param graph the enactment graph
    */
-  protected static void enforceSequentialityNestedWhile(final Task whileStart,
-      final Task nestedWhileStart, final EnactmentGraph graph) {
+  static void enforceSequentialityNestedWhile(final Task whileStart, final Task nestedWhileStart,
+      final EnactmentGraph graph) {
     PropertyServiceFunctionUtility.addSequelizerNode(whileStart, nestedWhileStart, graph);
     PropertyServiceData.resetContent(nestedWhileStart);
   }
@@ -100,7 +100,7 @@ public final class AfclCompoundsWhile {
    * @param graph the given graph
    * @return the while start nodes in the given graph
    */
-  protected static Set<Task> getWhileStartNodesInGraph(final EnactmentGraph graph) {
+  static Set<Task> getWhileStartNodesInGraph(final EnactmentGraph graph) {
     return graph.getVertices().stream().filter(node -> TaskPropertyService.isCommunication(node))
         .filter(dataNode -> PropertyServiceData.getNodeType(dataNode).equals(NodeType.WhileStart))
         .collect(Collectors.toSet());
@@ -117,7 +117,7 @@ public final class AfclCompoundsWhile {
    * @param whileId the name of the whole while compound
    * @param whileEnd the task node modeling the end of the while compound
    */
-  protected static void processWhileDataOut(final DataOuts dataOut, final EnactmentGraph graph,
+  static void processWhileDataOut(final DataOuts dataOut, final EnactmentGraph graph,
       final String whileId, final Task whileEnd) {
     // process/create the successor (overall while result)
     final String successorId = UtilsAfcl.getDataNodeId(whileId, dataOut.getName());
@@ -142,7 +142,7 @@ public final class AfclCompoundsWhile {
    * @param workflow the afcl workflow
    * @return the data node with the decision whether to continue
    */
-  protected static Task createCondition(final EnactmentGraph graph, final While whileCompound,
+  static Task createCondition(final EnactmentGraph graph, final While whileCompound,
       final Workflow workflow) {
     final String nodeId = whileCompound.getName() + ConstantsEEModel.KeywordSeparator1
         + ConstantsEEModel.WhileConditionSuffix;

@@ -25,7 +25,6 @@ public class ModuleLoaderString extends ModuleLoader {
   /**
    * See parent constructor
    * 
-   * @param moduleRegister
    */
   public ModuleLoaderString(final ModuleRegister moduleRegister) {
     super(moduleRegister);
