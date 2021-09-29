@@ -114,8 +114,7 @@ public final class AfclCompoundsIf {
     final String firstSrc = UtilsAfcl.getFirstSubStringIfOut(srcString);
     final String secondSrc = UtilsAfcl.getSecondSubStringIfOut(srcString);
     final Task firstSrcNode = graph.getVertex(firstSrc);
-    final Task secondSrcNode = Optional.fromNullable(graph.getVertex(secondSrc))
-        .or(graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifCompound, workflow)));
+    final Task secondSrcNode = graph.containsVertex(secondSrc) ? graph.getVertex(secondSrc) : graph.getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifCompound, workflow));  
     // create the choice function node
     final String funcNodeId = firstSrc + ConstantsEEModel.EarliestArrivalFuncAffix + secondSrc;
     final Task choiceFunction = PropertyServiceFunctionDataFlow.createDataFlowFunction(funcNodeId,
@@ -164,11 +163,11 @@ public final class AfclCompoundsIf {
       throw new IllegalArgumentException(
           "Second part of the if data out " + dataOutName + " does not point to a function out.");
     }
-    if (graph.getVertex(firstSrc) == null) {
+    if (!graph.containsVertex(firstSrc)) {
       throw new IllegalStateException("Src of if data out " + firstSrc + " not in the graph");
     }
-    if (graph.getVertex(secondSrc) == null && graph
-        .getVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifElse, workflow)) == null) {
+    if (!graph.containsVertex(secondSrc) && !graph
+        .containsVertex(HierarchyLevellingAfcl.getSrcDataId(secondSrc, ifElse, workflow))) {
       throw new IllegalStateException("Src of if data out " + secondSrc + " not in the graph");
     }
   }

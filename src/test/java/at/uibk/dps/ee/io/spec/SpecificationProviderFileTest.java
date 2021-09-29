@@ -6,13 +6,13 @@ import at.uibk.dps.ee.io.resources.ResourceGraphProviderFile;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.graph.EnactmentGraphProvider;
+import at.uibk.dps.ee.model.graph.MappingsConcurrent;
 import at.uibk.dps.ee.model.graph.ResourceGraphProvider;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUser;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping;
 import at.uibk.dps.ee.model.properties.PropertyServiceMapping.EnactmentMode;
 import at.uibk.dps.ee.model.properties.PropertyServiceMappingLocal;
 import net.sf.opendse.model.Mapping;
-import net.sf.opendse.model.Mappings;
 import net.sf.opendse.model.Resource;
 import net.sf.opendse.model.Task;
 
@@ -38,12 +38,12 @@ public class SpecificationProviderFileTest {
     SpecificationProviderFile tested =
         new SpecificationProviderFile(eProvider, rProvider, filePath);
 
-    Mappings<Task, Resource> result = tested.getMappings();
+    MappingsConcurrent result = tested.getMappings();
 
-    assertEquals(6, result.size());
-    assertEquals(4, result.get(t1).size());
-    assertEquals(2, result.get(t2).size());
-    result.getAll().forEach(mapping -> checkMapping(mapping));
+    assertEquals(6, result.mappingStream().count());
+    assertEquals(4, result.getMappings(t1).size());
+    assertEquals(2, result.getMappings(t2).size());
+    result.forEach(mapping -> checkMapping(mapping));
   }
 
   protected static void checkMapping(Mapping<Task, Resource> mapping) {

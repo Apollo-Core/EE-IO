@@ -191,11 +191,8 @@ public final class AfclCompounds {
    */
   protected static Task assureDataNodePresence(final String dataNodeId, final DataType dataType,
       final EnactmentGraph graph) {
-    Task result = graph.getVertex(dataNodeId);
-    if (result == null) {
-      result = new Communication(dataNodeId);
-      PropertyServiceData.setDataType(result, dataType);
-    } else {
+    if (graph.containsVertex(dataNodeId)) {
+      Task result = graph.getVertex(dataNodeId);
       final DataType actual = PropertyServiceData.getDataType(result);
       if (!actual.equals(dataType)) {
         if (actual.equals(DataType.Collection) && dataType.equals(DataType.Number)) {
@@ -205,8 +202,12 @@ public final class AfclCompounds {
               + " does not match the type expected by a requestor/producer");
         }
       }
+      return result;
+    } else {
+      Task result = new Communication(dataNodeId);
+      PropertyServiceData.setDataType(result, dataType);
+      return result;
     }
-    return result;
   }
 
   /**

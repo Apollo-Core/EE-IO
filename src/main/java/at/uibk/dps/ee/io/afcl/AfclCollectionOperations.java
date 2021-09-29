@@ -77,7 +77,7 @@ public final class AfclCollectionOperations {
         UtilsAfcl.getCollectionOperationType(contraint.getName(), subCollectionString);
     final String processedDataId = originalData.getId() + ConstantsEEModel.KeyWordSeparator2
         + operationType.name() + ConstantsEEModel.KeyWordSeparator2 + subCollectionString;
-    if (graph.getVertex(processedDataId) != null) {
+    if (graph.containsVertex(processedDataId)) {
       return graph.getVertex(processedDataId);
     }
 

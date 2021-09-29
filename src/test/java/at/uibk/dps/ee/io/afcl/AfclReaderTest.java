@@ -3,9 +3,10 @@ package at.uibk.dps.ee.io.afcl;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
-import at.uibk.dps.ee.io.persistance.EnactmentGraphIO;
 import at.uibk.dps.ee.io.testconstants.ConstantsTestCoreEEiO;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
+import at.uibk.dps.ee.model.graph.EnactmentSpecification;
+import at.uibk.dps.ee.model.persistance.EnactmentSpecIo;
 import net.sf.opendse.model.Dependency;
 import net.sf.opendse.model.Element;
 import net.sf.opendse.model.Task;
@@ -25,8 +26,9 @@ public class AfclReaderTest {
   public void testRead() {
     AfclReader tested = new AfclReader(ConstantsTestCoreEEiO.cfclFileSingleAtomic);
     EnactmentGraph result = tested.getEnactmentGraph();
-    EnactmentGraph expected =
-        EnactmentGraphIO.readEnactmentGraph(ConstantsTestCoreEEiO.xmlFileTestAtomic);
+    EnactmentSpecification eSpec =
+        EnactmentSpecIo.readSpecFromFilePath(ConstantsTestCoreEEiO.xmlFileTestAtomic);
+    EnactmentGraph expected = eSpec.getEnactmentGraph();
     for (Task task : expected) {
       compareElements(result.getVertex(task.getId()), task);
     }

@@ -105,9 +105,9 @@ public class SingleAtomicAfclTest {
     Dependency inputEdge2 = edgeIterator.next();
 
     Dependency edgeToRoot =
-        result.getEndpoints(inputEdge1).getFirst().equals(actualRoot) ? inputEdge1 : inputEdge2;
+        result.getSource(inputEdge1).equals(actualRoot) ? inputEdge1 : inputEdge2;
     Dependency edgeToConstant =
-        result.getEndpoints(inputEdge1).getFirst().equals(actualRoot) ? inputEdge2 : inputEdge1;
+        result.getSource(inputEdge1).equals(actualRoot) ? inputEdge2 : inputEdge1;
 
     Dependency outputEdge = outEdges.iterator().next();
 
@@ -115,9 +115,9 @@ public class SingleAtomicAfclTest {
     assertEquals(TypeDependency.Data, PropertyServiceDependency.getType(edgeToRoot));
     assertEquals(TypeDependency.Data, PropertyServiceDependency.getType(edgeToConstant));
 
-    assertEquals(actualRoot, result.getEndpoints(edgeToRoot).getFirst());
-    assertEquals(constantData, result.getEndpoints(edgeToConstant).getFirst());
-    assertEquals(leaf, result.getEndpoints(outputEdge).getSecond());
+    assertEquals(actualRoot, result.getSource(edgeToRoot));
+    assertEquals(constantData, result.getSource(edgeToConstant));
+    assertEquals(leaf, result.getDest(outputEdge));
 
     assertEquals(ConstantsTestCoreEEiO.wfFunctionInputNameAtomic,
         PropertyServiceDependency.getJsonKey(edgeToRoot));
