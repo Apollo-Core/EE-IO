@@ -12,7 +12,6 @@ import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.objects.Condition;
 import at.uibk.dps.ee.model.properties.PropertyServiceData;
 import at.uibk.dps.ee.model.properties.PropertyServiceData.DataType;
-import at.uibk.dps.ee.model.properties.PropertyServiceData.NodeType;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtility;
 import at.uibk.dps.ee.model.properties.PropertyServiceFunctionUtilityCondition;
@@ -54,16 +53,13 @@ public final class AfclCompoundsWhile {
     graph.addVertex(loopCounter);
     // create the contents of the loop body
     final Set<Task> beforeAddingLoopBody = AfclCompounds.getFunctionNodes(graph);
-    final Set<Task> whileDataNodesBeforeBody = getWhileStartNodesInGraph(graph);
+    final Set<Task> whileDataNodesBeforeBody = getWhileNodesInGraph(graph, true);
     AfclCompounds.processTheLoopBody(whileCompound, graph, workflow);
     // create the condition
     final Task stopDecision = createCondition(graph, whileCompound, workflow);
-    final Set<Task> whileDataNodesAfterBody = getWhileStartNodesInGraph(graph);
-    whileDataNodesAfterBody.removeAll(whileDataNodesBeforeBody);
     final Set<Task> loopBodyFunctions = AfclCompounds.getFunctionNodes(graph);
     loopBodyFunctions.removeAll(beforeAddingLoopBody);
-    whileDataNodesAfterBody
-        .forEach(nestedWhile -> enforceSequentialityNestedWhile(whileStart, nestedWhile, graph));
+    enforceWhileStartOrder(whileDataNodesBeforeBody, whileStart, graph, true);
     // connect the functions to the while start
     loopBodyFunctions.forEach(bodyFunction -> PropertyServiceDependency
         .addDataDependency(whileStart, bodyFunction, ConstantsEEModel.JsonKeyWhileStart, graph));
@@ -82,6 +78,29 @@ public final class AfclCompoundsWhile {
   }
 
   /**
+   * Ensures that any while start node in the provided nested node set will start
+   * after the given predecessor node by adding an extra sequentiality node
+   * between the predecessor and the while start.
+   * 
+   * @param whileTasksPreTransform the set of while tasks which were there before
+   *        the transformation
+   * @param predecessor the task which must be executed before the while
+   * @param lookingForWhileStarts true: looking for while starts; false: looking
+   *        for while counters
+   * @param graph the enactment graph
+   */
+  public static void enforceWhileStartOrder(Set<Task> whileTasksPreTransform, Task predecessor,
+      EnactmentGraph graph, boolean lookingForWhileStarts) {
+    Set<Task> innerWhiles = getWhileNodesInGraph(graph, lookingForWhileStarts);
+    innerWhiles.removeAll(whileTasksPreTransform);
+    innerWhiles.stream().filter(node -> TaskPropertyService.isCommunication(node))
+        .filter(dataNode -> lookingForWhileStarts ? PropertyServiceData.isWhileStart(dataNode)
+            : PropertyServiceData.isWhileCounter(dataNode))
+        .forEach(nestedWhileStart -> enforceSequentialityNestedWhile(predecessor, nestedWhileStart,
+            graph));
+  }
+
+  /**
    * Add a sequelizer node between the while start and the nested while start.
    * 
    * @param whileStart the while start node
@@ -90,19 +109,25 @@ public final class AfclCompoundsWhile {
    */
   static void enforceSequentialityNestedWhile(final Task whileStart, final Task nestedWhileStart,
       final EnactmentGraph graph) {
-    PropertyServiceFunctionUtility.addSequelizerNode(whileStart, nestedWhileStart, graph);
-    PropertyServiceData.resetContent(nestedWhileStart);
+    PropertyServiceFunctionUtility.enforceSequentiality(whileStart, nestedWhileStart, graph);
+    if (PropertyServiceData.isWhileStart(nestedWhileStart)) {
+      PropertyServiceData.resetContent(nestedWhileStart);
+    } ;
   }
 
   /**
-   * Returns the while start nodes contained in the given graph
+   * Returns the while nodes contained in the given graph
    * 
    * @param graph the given graph
+   * @param lookingForWhileStart true iff looking for while start nodes, false iff
+   *        looking for while counters
    * @return the while start nodes in the given graph
    */
-  static Set<Task> getWhileStartNodesInGraph(final EnactmentGraph graph) {
+  public static Set<Task> getWhileNodesInGraph(final EnactmentGraph graph,
+      boolean lookingForWhileStart) {
     return graph.getVertices().stream().filter(node -> TaskPropertyService.isCommunication(node))
-        .filter(dataNode -> PropertyServiceData.getNodeType(dataNode).equals(NodeType.WhileStart))
+        .filter(dataNode -> lookingForWhileStart ? PropertyServiceData.isWhileStart(dataNode)
+            : PropertyServiceData.isWhileCounter(dataNode))
         .collect(Collectors.toSet());
   }
 

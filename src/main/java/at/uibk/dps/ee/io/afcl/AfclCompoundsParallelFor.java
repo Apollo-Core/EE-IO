@@ -60,6 +60,10 @@ public final class AfclCompoundsParallelFor {
 
     final List<DataIns> dataIns = AfclApiWrapper.getDataIns(parallelFor);
 
+    // remember the while nodes which are there before the for body is added
+    Set<Task> whileStartsOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, true);
+    Set<Task> whileCounterOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, false);
+
     if (isIntIteratorList(iterators)) {
       // create/find the node providing the iteration number
       processIterator(iterators.get(0), graph, dataIns, distributionNode, parallelFor.getName());
@@ -95,6 +99,10 @@ public final class AfclCompoundsParallelFor {
       getSubGraphRoots(graph, functionsAfterAdding, distributionNode).forEach(
           subGraphRoot -> connectSubGraphRootToDistNode(graph, distributionNode, subGraphRoot));
     }
+
+    // make sure that the nested while starts suceed the distribution node
+    AfclCompoundsWhile.enforceWhileStartOrder(whileStartsOutside, distributionNode, graph, true);
+    AfclCompoundsWhile.enforceWhileStartOrder(whileCounterOutside, distributionNode, graph, false);
 
     // process the data outs and add the aggregate function
     final Optional<List<DataOuts>> dataOuts = Optional.ofNullable(parallelFor.getDataOuts());
