@@ -112,7 +112,7 @@ public final class AfclCompoundsWhile {
     PropertyServiceFunctionUtility.enforceSequentiality(whileStart, nestedWhileStart, graph);
     if (PropertyServiceData.isWhileStart(nestedWhileStart)) {
       PropertyServiceData.resetContent(nestedWhileStart);
-    } ;
+    }
   }
 
   /**

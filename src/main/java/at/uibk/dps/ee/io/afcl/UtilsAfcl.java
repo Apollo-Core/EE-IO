@@ -285,7 +285,7 @@ public final class UtilsAfcl {
    * 
    * @param filePath the path to the file
    * @return the byte array
-   * @throws IOException
+   * @throws IOException exception thrown if reading fails
    */
   public static byte[] readFileToBytes(final String filePath) throws IOException {
       final File file = new File(filePath);
