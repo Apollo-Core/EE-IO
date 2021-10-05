@@ -89,9 +89,9 @@ public final class AfclCompoundsWhile {
    *        for while counters
    * @param graph the enactment graph
    */
-  public static void enforceWhileStartOrder(Set<Task> whileTasksPreTransform, Task predecessor,
-      EnactmentGraph graph, boolean lookingForWhileStarts) {
-    Set<Task> innerWhiles = getWhileNodesInGraph(graph, lookingForWhileStarts);
+  public static void enforceWhileStartOrder(final Set<Task> whileTasksPreTransform,
+      final Task predecessor, final EnactmentGraph graph, final boolean lookingForWhileStarts) {
+    final Set<Task> innerWhiles = getWhileNodesInGraph(graph, lookingForWhileStarts);
     innerWhiles.removeAll(whileTasksPreTransform);
     innerWhiles.stream().filter(node -> TaskPropertyService.isCommunication(node))
         .filter(dataNode -> lookingForWhileStarts ? PropertyServiceData.isWhileStart(dataNode)
@@ -124,7 +124,7 @@ public final class AfclCompoundsWhile {
    * @return the while start nodes in the given graph
    */
   public static Set<Task> getWhileNodesInGraph(final EnactmentGraph graph,
-      boolean lookingForWhileStart) {
+      final boolean lookingForWhileStart) {
     return graph.getVertices().stream().filter(node -> TaskPropertyService.isCommunication(node))
         .filter(dataNode -> lookingForWhileStart ? PropertyServiceData.isWhileStart(dataNode)
             : PropertyServiceData.isWhileCounter(dataNode))

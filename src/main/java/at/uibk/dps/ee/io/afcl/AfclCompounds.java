@@ -192,7 +192,7 @@ public final class AfclCompounds {
   static Task assureDataNodePresence(final String dataNodeId, final DataType dataType,
       final EnactmentGraph graph) {
     if (graph.containsVertex(dataNodeId)) {
-      Task result = graph.getVertex(dataNodeId);
+      final Task result = graph.getVertex(dataNodeId);
       final DataType actual = PropertyServiceData.getDataType(result);
       if (!actual.equals(dataType)) {
         if (actual.equals(DataType.Collection) && dataType.equals(DataType.Number)) {
@@ -204,7 +204,7 @@ public final class AfclCompounds {
       }
       return result;
     } else {
-      Task result = new Communication(dataNodeId);
+      final Task result = new Communication(dataNodeId);
       PropertyServiceData.setDataType(result, dataType);
       return result;
     }

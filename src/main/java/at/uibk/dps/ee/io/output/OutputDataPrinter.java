@@ -31,7 +31,7 @@ public class OutputDataPrinter implements OutputDataHandler {
    * 
    * @param json the enactment result
    */
-  protected void handleSuccess(JsonObject json) {
+  protected void handleSuccess(final JsonObject json) {
     outputLogger.info("Workflow executed correctly.");
     outputLogger.info("Enactment result: {}", json.toString());
   }
@@ -41,7 +41,7 @@ public class OutputDataPrinter implements OutputDataHandler {
    * 
    * @param failureReason the reason for the failure
    */
-  protected void handleFailure(Throwable failureReason) {
+  protected void handleFailure(final Throwable failureReason) {
     outputLogger.error("Enactment failed. No output produced.");
   }
 }

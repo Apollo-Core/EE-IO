@@ -61,8 +61,8 @@ public final class AfclCompoundsParallelFor {
     final List<DataIns> dataIns = AfclApiWrapper.getDataIns(parallelFor);
 
     // remember the while nodes which are there before the for body is added
-    Set<Task> whileStartsOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, true);
-    Set<Task> whileCounterOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, false);
+    final Set<Task> whileStartsOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, true);
+    final Set<Task> whileCounterOutside = AfclCompoundsWhile.getWhileNodesInGraph(graph, false);
 
     if (isIntIteratorList(iterators)) {
       // create/find the node providing the iteration number
