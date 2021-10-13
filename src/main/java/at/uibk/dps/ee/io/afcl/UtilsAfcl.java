@@ -12,6 +12,7 @@ import at.uibk.dps.afcl.functions.AtomicFunction;
 import at.uibk.dps.afcl.functions.IfThenElse;
 import at.uibk.dps.afcl.functions.ParallelFor;
 import at.uibk.dps.afcl.functions.While;
+import at.uibk.dps.afcl.functions.objects.DataIns;
 import at.uibk.dps.afcl.functions.objects.PropertyConstraint;
 import at.uibk.dps.ee.model.constants.ConstantsEEModel;
 import at.uibk.dps.ee.model.objects.Condition.CombinedWith;
@@ -40,6 +41,24 @@ public final class UtilsAfcl {
    */
   public enum CompoundType {
     Atomic, If, ParallelFor, While
+  }
+
+  /**
+   * Returns an optional of the data in with the given name of the given function.
+   * 
+   * @param function the given function
+   * @param name the name of the desired data in
+   * @return an optional of the data in with the given name of the given function
+   */
+  public static Optional<DataIns> getDataInWithName(Function function, String name) {
+    Optional<DataIns> result = Optional.empty();
+    for (DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+      if (dataIn.getName().equals(name)) {
+        result = Optional.of(dataIn);
+        break;
+      }
+    }
+    return result;
   }
 
   /**
@@ -186,7 +205,7 @@ public final class UtilsAfcl {
     final String affix = ConstantsAfcl.SourceAffix;
     return srcString.contains(affix) && !srcString.startsWith(affix) && !srcString.endsWith(affix);
   }
-  
+
   /**
    * Returns true iff the provided string describes constant data.
    * 
@@ -279,7 +298,7 @@ public final class UtilsAfcl {
     return first ? srcString.split(ConstantsAfcl.IfFuncSeparator)[0]
         : srcString.split(ConstantsAfcl.IfFuncSeparator)[1];
   }
-  
+
   /**
    * Reads a file at the specified path and converts it to an array of bytes.
    * 
@@ -288,13 +307,13 @@ public final class UtilsAfcl {
    * @throws IOException exception thrown if reading fails
    */
   public static byte[] readFileToBytes(final String filePath) throws IOException {
-      final File file = new File(filePath);
-      final byte[] result = new byte[(int) file.length()];
-      try (InputStream fis = Files.newInputStream(Paths.get(filePath))) {
-          try (BufferedInputStream bis = new BufferedInputStream(fis)) {
-              bis.read(result, 0, result.length);
-          }
+    final File file = new File(filePath);
+    final byte[] result = new byte[(int) file.length()];
+    try (InputStream fis = Files.newInputStream(Paths.get(filePath))) {
+      try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+        bis.read(result, 0, result.length);
       }
-      return result;
+    }
+    return result;
   }
 }

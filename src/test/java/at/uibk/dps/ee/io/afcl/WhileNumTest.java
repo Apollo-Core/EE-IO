@@ -35,7 +35,8 @@ class WhileNumTest {
     assertEquals(12, edgeNum);
 
     assertTrue(PropertyServiceDependency.isWhileAnnotated(markedEdge));
-    assertEquals("increment/sum", PropertyServiceDependency.getReplicaSrcReference(markedEdge));
+    assertEquals("increment/sum",
+        PropertyServiceDependency.getDataRefForWhile(markedEdge, "while"));
   }
 
 

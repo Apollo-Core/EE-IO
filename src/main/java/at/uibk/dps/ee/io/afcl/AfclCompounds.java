@@ -279,6 +279,52 @@ public final class AfclCompounds {
     processFunctionListRefs(functions, workflow, references);
   }
 
+
+
+  static void gatherWhileRefsRec(String initialSource, String curSrcString, Function curFunction,
+      Workflow workflow, Set<WhileInputReference> result) {
+    // base case
+    if (!pointsToOuterFunction(curSrcString, workflow)) {
+      return;
+    }
+    String producerId = UtilsAfcl.getProducerId(curSrcString);
+    Function function = AfclApiWrapper.getFunction(workflow, producerId);
+    if (AfclApiWrapper.contains(function, curFunction)) {
+      // pointing to a function one level up -> continue
+      String dataId = UtilsAfcl.getDataId(curSrcString);
+      if (function instanceof While) {
+        // find the source of the corresponding while data out
+        Optional<DataOuts> dOut = Optional.empty();
+        for (DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
+          if (dataOut.getName().equals(dataId)) {
+            dOut = Optional.of(dataOut);
+            break;
+          }
+        }
+        String referenceSrc = dOut.get().getSource();
+        // add while input reference
+        WhileInputReference inputReference =
+            new WhileInputReference(initialSource, referenceSrc, function.getName());
+        result.add(inputReference);
+      }
+      // find the next dataIn and its srcString
+      Optional<DataIns> dIn = Optional.empty();
+      for (DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+        if (dataIn.getName().equals(dataId)) {
+          dIn = Optional.of(dataIn);
+          break;
+        }
+      }
+      String nextSrcString = dIn.get().getSource();
+      // continue on the next level
+      gatherWhileRefsRec(initialSource, nextSrcString, function, workflow, result);
+    } else {
+      // pointing to an output on the same level
+      return;
+    }
+  }
+
+
   /**
    * Checks the inputs of the given atomic function and returns the references to
    * its first and further sources.
@@ -291,22 +337,133 @@ public final class AfclCompounds {
       final Workflow workflow) {
     final Set<WhileInputReference> result = new HashSet<>();
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
-      final String source = dataIn.getSource();
-      if (!UtilsAfcl.isSrcString(source)) {
-        continue;
-      }
-      final String srcFunctionName = UtilsAfcl.getProducerId(source);
-      if (srcFunctionName.equals(workflow.getName())) {
-        continue;
-      }
-      final Function srcFunction = AfclApiWrapper.getFunction(workflow, srcFunctionName);
-      if (srcFunction instanceof While) {
-        final While whileFunc = (While) srcFunction;
-        final String dataName = UtilsAfcl.getDataId(source);
-        result.add(getInputReference(whileFunc, dataName, workflow, function));
-      }
+      String srcString = getActualSrc(dataIn.getSource(), function, workflow);
+      Set<WhileInputReference> inputRefs = new HashSet<>();
+      gatherWhileRefsRec(srcString, dataIn.getSource(), function, workflow, inputRefs);
+      result.addAll(inputRefs);
     }
     return result;
+    // final Set<WhileInputReference> result = new HashSet<>();
+    // for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+    // final String source = dataIn.getSource();
+    // if (!pointsToOuterFunction(dataIn, workflow)) {
+    // continue;
+    // }
+    // final Function srcFunction =
+    // AfclApiWrapper.getFunction(workflow, UtilsAfcl.getProducerId(source));
+    // if (srcFunction instanceof While) {
+    // // pointing to an enclosing while function -> while reference
+    // final While whileFunc = (While) srcFunction;
+    // final String dataName = UtilsAfcl.getDataId(source);
+    // // reference to the innermost while
+    // result.add(getInputReference(whileFunc, dataName, workflow, function));
+    //
+    // // consider possible outer whiles
+    // List<While> enclosingWhileFunctions = new ArrayList<>();
+    // List<DataIns> enclosingWhileDataIns = new ArrayList<>();
+    // findEnclosingWhiles(function, dataIn, workflow, enclosingWhileFunctions,
+    // enclosingWhileDataIns);
+    // if (enclosingWhileFunctions.size() > 1) {
+    // // process the outer whiles
+    // for (int listPos = 1; listPos < enclosingWhileFunctions.size(); listPos++) {
+    // While outerWhile = enclosingWhileFunctions.get(listPos);
+    // DataIns relevantDataIn = enclosingWhileDataIns.get(listPos);
+    // result.add(
+    // getInputReferenceNestedWhile(outerWhile, relevantDataIn.getSource(),
+    // workflow));
+    // }
+    // }
+    // }
+    // }
+    // return result;
+  }
+
+  /**
+   * Returns true if the given data in points to an enclosing function.
+   * 
+   * @param dataIn the data in
+   * @param workflow the workflow
+   * @return true if the given data in points to an enclosing function
+   */
+  static boolean pointsToOuterFunction(String srcString, Workflow workflow) {
+    if (!UtilsAfcl.isSrcString(srcString)) {
+      // Not pointing to data source -> irrelevant
+      return false;
+    }
+    final String srcFunctionName = UtilsAfcl.getProducerId(srcString);
+    return !srcFunctionName.equals(workflow.getName());
+  }
+
+  /**
+   * Returns a list (ordered from inner to outer) of the enclosing while functions
+   * relevant to the given data in.
+   * 
+   * @param function the innermost while
+   * @param dataIn the data in of the innermost while
+   * @param workflow the workflow
+   * @param whileList the list of whiles (filled in this method)
+   * @param dataInList the list of dataIns (indeces correspond to while list;
+   *        filled in this method)
+   */
+  static void findEnclosingWhiles(Function function, DataIns dataIn, Workflow workflow,
+      List<While> whileList, List<DataIns> dataInList) {
+    // recursion base
+    if (!pointsToOuterFunction(dataIn.getSource(), workflow)) {
+      return;
+    }
+    // get the enclosing function
+    final Function srcFunction =
+        AfclApiWrapper.getFunction(workflow, UtilsAfcl.getProducerId(dataIn.getSource()));
+    // find the next dataIn
+
+    DataIns nextDataIn = UtilsAfcl.getDataInWithName(srcFunction, dataIn.getSource()).get();
+    if (srcFunction instanceof While) {
+      // add function to list
+      whileList.add((While) srcFunction);
+      dataInList.add(nextDataIn);
+    }
+    // continue on the next level
+    findEnclosingWhiles(srcFunction, nextDataIn, workflow, whileList, dataInList);
+  }
+
+  /**
+   * Generated the while input reference describing the relation between the given
+   * while functions w.r.t. the specified input.
+   * 
+   * @param outerWhile the outer while
+   * @param dataSrcString the string describing the data source
+   * @param workflow the workflow
+   * @return the while input reference describing the relation between the given
+   *         while functions w.r.t. the specified input
+   */
+//  static WhileInputReference getInputReferenceNestedWhile(While outerWhile, String dataSrcString,
+//      Workflow workflow) {
+//    // the first iteration input will be dictated by the innermost while
+//    String firstIterationInput = WhileInputReference.irrelevantString;
+//    // find the later iteration input (the while output matching the dataIn)
+//    Optional<DataOuts> relevantOut = Optional.empty();
+//    for (DataOuts dOut : outerWhile.getDataOuts()) {
+//      if (dOut.getName().equals(dataSrcString)) {
+//        relevantOut = Optional.of(dOut);
+//        break;
+//      }
+//    }
+//    String laterIterationsInput = relevantOut.get().getSource();
+//    return new WhileInputReference(firstIterationInput, laterIterationsInput, outerWhile.getName());
+//  }
+
+  /**
+   * Returns the actual src that the given file src string points to.
+   * 
+   * @param srcString the src string from the AFCL file
+   * @param innerFunction the function with the src string
+   * @param workflow the workflow
+   * @return the actual src that the given file src string points to
+   */
+  static String getActualSrc(String srcString, Function innerFunction, Workflow workflow) {
+    return UtilsAfcl.isSrcString(srcString)
+        ? HierarchyLevellingAfcl.getSrcDataId(srcString, innerFunction, workflow)
+        : srcString;
   }
 
   /**

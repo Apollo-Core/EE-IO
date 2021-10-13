@@ -5,12 +5,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
+import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
 import at.uibk.dps.ee.visualization.model.EnactmentGraphViewer;
+import net.sf.opendse.model.Dependency;
 import net.sf.opendse.model.properties.TaskPropertyService;
 
-class WhileWhileTest {
+class WhileNestedTest {
 
   EnactmentGraph result;
+  Dependency markedEdge;
 
   /**
    * Checks that the graph has the right numbers of nodes and edges.
@@ -23,20 +26,25 @@ class WhileWhileTest {
     int numData = (int) result.getVertices().stream()
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
-
-    EnactmentGraphViewer.view(result);
     
     assertEquals(6, numFunc);
-    assertEquals(13, numData);
-    assertEquals(25, edgeNum);
+    assertEquals(14, numData);
+    assertEquals(26, edgeNum);
+    
+    EnactmentGraphViewer.view(result);
+    
+    assertTrue(PropertyServiceDependency.isWhileAnnotated(markedEdge));
+    assertEquals("increment/sum", PropertyServiceDependency.getDataRefForWhile(markedEdge, "innerWhile"));
+    assertEquals("innerWhile/sum", PropertyServiceDependency.getDataRefForWhile(markedEdge, "outerWhile"));    
   }
 
 
   @BeforeEach
   void setup() {
     // read in the graph
-    Workflow whileWf = Graphs.getWhileWhile();
+    Workflow whileWf = Graphs.getWhileNested();
     result = GraphGenerationAfcl.generateEnactmentGraph(whileWf);
+    markedEdge = result.getEdge("complexWhile/input--increment");
   }
 
 }

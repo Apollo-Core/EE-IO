@@ -64,6 +64,10 @@ public class Graphs {
   public static Workflow getWhileWhile() {
     return getWf(ConstantsTestCoreEEiO.afclFileWhileWhile);
   }
+  
+  public static Workflow getWhileNested() {
+    return getWf(ConstantsTestCoreEEiO.afclFileWhileNested);
+  }
 
   public static Workflow getWhileOneLevel() {
     return getWf(ConstantsTestCoreEEiO.afclFileWhileOneLevel);

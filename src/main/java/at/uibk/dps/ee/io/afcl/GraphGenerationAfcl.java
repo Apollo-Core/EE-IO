@@ -71,7 +71,8 @@ public final class GraphGenerationAfcl {
    * Annotates the while reference for the given function
    * 
    * @param graph the enactment graph
-   * @param functionName the function name
+   * @param functionName the name of the function to whose input is referenced by
+   *        the input reference
    * @param inputReference the processed input reference
    */
   static void annotateWhileReferenceFunction(final EnactmentGraph graph, final String functionName,
@@ -82,17 +83,20 @@ public final class GraphGenerationAfcl {
           "Function " + functionName + " while-referenced, but not in graph.");
     }
     // find the correct in Edge and annotate it
-    final Task furtherIterationDataNode =
-        Optional.ofNullable(graph.getVertex(inputReference.getLaterIterationsInput()))
-            .orElseThrow(() -> new IllegalStateException("Later while reference "
-                + inputReference.getLaterIterationsInput() + " not in the graph"));
+    // final Task furtherIterationDataNode =
+    // Optional.ofNullable(graph.getVertex(inputReference.getLaterIterationsInput()))
+    // .orElseThrow(() -> new IllegalStateException("Later while reference "
+    // + inputReference.getLaterIterationsInput() + " not in the graph"));
     final String firstIterId = UtilsAfcl.isSrcString(inputReference.getFirstIterationInput())
         ? inputReference.getFirstIterationInput()
         : ConstantsEEModel.ConstantNodeAffix + "/" + inputReference.getFirstIterationInput();
     for (final Dependency inEdge : graph.getInEdges(function)) {
       if (graph.getSource(inEdge).getId().equals(firstIterId)) {
-        PropertyServiceDependency.annotateWhileReplica(inEdge, furtherIterationDataNode,
-            inputReference.getWhileCompoundId());
+        PropertyServiceDependency.addWhileInputReference(inEdge,
+            inputReference.getLaterIterationsInput(), inputReference.getWhileCompoundId());
+        // PropertyServiceDependency.annotateWhileReplica(inEdge,
+        // furtherIterationDataNode,
+        // inputReference.getWhileCompoundId());
         return;
       }
     }

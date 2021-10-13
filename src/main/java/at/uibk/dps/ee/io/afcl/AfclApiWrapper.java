@@ -229,6 +229,8 @@ public final class AfclApiWrapper {
       return getDataIns((IfThenElse) func);
     } else if (func instanceof ParallelFor) {
       return getDataIns((ParallelFor) func);
+    } else if (func instanceof While) {
+      return getDataIns((While) func);
     } else {
       throw new IllegalStateException("Not yet implemented.");
     }
@@ -239,6 +241,8 @@ public final class AfclApiWrapper {
       return getDataOuts((IfThenElse) func);
     } else if (func instanceof ParallelFor) {
       return getDataOuts((ParallelFor) func);
+    } else if (func instanceof While) {
+      return getDataOuts((While) func);
     } else {
       throw new IllegalStateException("Not yet implemented.");
     }
@@ -246,6 +250,10 @@ public final class AfclApiWrapper {
 
   static List<DataOuts> getDataOuts(ParallelFor parallelFor) {
     return Optional.ofNullable(parallelFor.getDataOuts()).orElse(new ArrayList<>());
+  }
+
+  static List<DataOuts> getDataOuts(While whileFunc) {
+    return Optional.ofNullable(whileFunc.getDataOuts()).orElse(new ArrayList<>());
   }
 
   public static List<DataIns> getDataIns(IfThenElse ifCompound) {
@@ -265,6 +273,10 @@ public final class AfclApiWrapper {
 
   public static List<DataIns> getDataIns(ParallelFor parallelFor) {
     return Optional.ofNullable(parallelFor.getDataIns()).orElse(new ArrayList<>());
+  }
+
+  public static List<DataIns> getDataIns(While whileFunc) {
+    return Optional.ofNullable(whileFunc.getDataIns()).orElse(new ArrayList<>());
   }
 
   public static List<DataOutsAtomic> getDataOuts(AtomicFunction atomFunc) {

@@ -36,8 +36,12 @@ public class ConstantsTestCoreEEiO {
   public static final String afclFileWhileColl = "src/test/resources/wfInputFiles/while.yaml";
   public static final String afclFileWhileNum = "src/test/resources/wfInputFiles/whileNum.yaml";
   public static final String afclFileWhileWhile = "src/test/resources/wfInputFiles/whileWhile.yaml";
-  public static final String afclFileWhileOneLevel = "src/test/resources/wfInputFiles/whileOneLevel.yaml";
-  public static final String afclFileWhileMultiLevel = "src/test/resources/wfInputFiles/whileMultiLevel.yaml";
+  public static final String afclFileWhileOneLevel =
+      "src/test/resources/wfInputFiles/whileOneLevel.yaml";
+  public static final String afclFileWhileMultiLevel =
+      "src/test/resources/wfInputFiles/whileMultiLevel.yaml";
+  public static final String afclFileWhileNested =
+      "src/test/resources/wfInputFiles/whileNested.yaml";
 
   // single atomic names
   public static final String wfNameAtomic = "single Atomic";
@@ -93,8 +97,8 @@ public class ConstantsTestCoreEEiO {
 
   // constants for the ee starter
   public static final String configFileModuleRead = "src/test/resources/testConfigs/testConfig.xml";
-  
+
   // constants for testing the file reading
   public static final String filePathReadTestFile = "src/test/resources/other/mockFileToBytes.yml";
-  public static final byte[] expectedByteValue = { 52, 50, 10 };
+  public static final byte[] expectedByteValue = {52, 50, 10};
 }
