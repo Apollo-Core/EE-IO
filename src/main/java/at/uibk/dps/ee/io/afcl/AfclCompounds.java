@@ -318,7 +318,7 @@ public final class AfclCompounds {
     }
   }
 
-  static DataIns getNamedDataIn(Function function, String name) {
+  static DataIns getNamedDataIn(final Function function, final String name) {
     Optional<DataIns> dIn = Optional.empty();
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
       if (dataIn.getName().equals(name)) {
@@ -329,7 +329,7 @@ public final class AfclCompounds {
     return dIn.get();
   }
 
-  static DataOuts getNamedDataOut(Function function, String name) {
+  static DataOuts getNamedDataOut(final Function function, final String name) {
     Optional<DataOuts> dOut = Optional.empty();
     for (final DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
       if (dataOut.getName().equals(name)) {
