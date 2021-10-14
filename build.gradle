@@ -40,7 +40,7 @@ dependencies {
   }else {
     implementation 'com.github.Apollo-Core:EE-Core:master-SNAPSHOT'
     implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
-    implementation 'com.github.Apollo-Core:EE-Model:8458291a82'
+    implementation 'com.github.Apollo-Core:EE-Model:main-SNAPSHOT'
   }
 
   // dependencies to projects from other parts of Apollo
