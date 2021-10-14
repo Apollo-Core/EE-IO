@@ -50,9 +50,9 @@ public final class UtilsAfcl {
    * @param name the name of the desired data in
    * @return an optional of the data in with the given name of the given function
    */
-  public static Optional<DataIns> getDataInWithName(Function function, String name) {
+  public static Optional<DataIns> getDataInWithName(final Function function, final String name) {
     Optional<DataIns> result = Optional.empty();
-    for (DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+    for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
       if (dataIn.getName().equals(name)) {
         result = Optional.of(dataIn);
         break;

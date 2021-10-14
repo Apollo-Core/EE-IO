@@ -281,41 +281,41 @@ public final class AfclCompounds {
 
 
 
-  static void gatherWhileRefsRec(String initialSource, String curSrcString, Function curFunction,
-      Workflow workflow, Set<WhileInputReference> result) {
+  static void gatherWhileRefsRec(final String initialSource, final String curSrcString,
+      final Function curFunction, final Workflow workflow, final Set<WhileInputReference> result) {
     // base case
     if (!pointsToOuterFunction(curSrcString, workflow)) {
       return;
     }
-    String producerId = UtilsAfcl.getProducerId(curSrcString);
-    Function function = AfclApiWrapper.getFunction(workflow, producerId);
+    final String producerId = UtilsAfcl.getProducerId(curSrcString);
+    final Function function = AfclApiWrapper.getFunction(workflow, producerId);
     if (AfclApiWrapper.contains(function, curFunction)) {
       // pointing to a function one level up -> continue
-      String dataId = UtilsAfcl.getDataId(curSrcString);
+      final String dataId = UtilsAfcl.getDataId(curSrcString);
       if (function instanceof While) {
         // find the source of the corresponding while data out
         Optional<DataOuts> dOut = Optional.empty();
-        for (DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
+        for (final DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
           if (dataOut.getName().equals(dataId)) {
             dOut = Optional.of(dataOut);
             break;
           }
         }
-        String referenceSrc = dOut.get().getSource();
+        final String referenceSrc = dOut.get().getSource();
         // add while input reference
-        WhileInputReference inputReference =
+        final WhileInputReference inputReference =
             new WhileInputReference(initialSource, referenceSrc, function.getName());
         result.add(inputReference);
       }
       // find the next dataIn and its srcString
       Optional<DataIns> dIn = Optional.empty();
-      for (DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+      for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
         if (dataIn.getName().equals(dataId)) {
           dIn = Optional.of(dataIn);
           break;
         }
       }
-      String nextSrcString = dIn.get().getSource();
+      final String nextSrcString = dIn.get().getSource();
       // continue on the next level
       gatherWhileRefsRec(initialSource, nextSrcString, function, workflow, result);
     } else {
@@ -337,8 +337,8 @@ public final class AfclCompounds {
       final Workflow workflow) {
     final Set<WhileInputReference> result = new HashSet<>();
     for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
-      String srcString = getActualSrc(dataIn.getSource(), function, workflow);
-      Set<WhileInputReference> inputRefs = new HashSet<>();
+      final String srcString = getActualSrc(dataIn.getSource(), function, workflow);
+      final Set<WhileInputReference> inputRefs = new HashSet<>();
       gatherWhileRefsRec(srcString, dataIn.getSource(), function, workflow, inputRefs);
       result.addAll(inputRefs);
     }
