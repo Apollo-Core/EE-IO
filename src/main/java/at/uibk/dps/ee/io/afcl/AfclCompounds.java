@@ -343,39 +343,6 @@ public final class AfclCompounds {
       result.addAll(inputRefs);
     }
     return result;
-    // final Set<WhileInputReference> result = new HashSet<>();
-    // for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
-    // final String source = dataIn.getSource();
-    // if (!pointsToOuterFunction(dataIn, workflow)) {
-    // continue;
-    // }
-    // final Function srcFunction =
-    // AfclApiWrapper.getFunction(workflow, UtilsAfcl.getProducerId(source));
-    // if (srcFunction instanceof While) {
-    // // pointing to an enclosing while function -> while reference
-    // final While whileFunc = (While) srcFunction;
-    // final String dataName = UtilsAfcl.getDataId(source);
-    // // reference to the innermost while
-    // result.add(getInputReference(whileFunc, dataName, workflow, function));
-    //
-    // // consider possible outer whiles
-    // List<While> enclosingWhileFunctions = new ArrayList<>();
-    // List<DataIns> enclosingWhileDataIns = new ArrayList<>();
-    // findEnclosingWhiles(function, dataIn, workflow, enclosingWhileFunctions,
-    // enclosingWhileDataIns);
-    // if (enclosingWhileFunctions.size() > 1) {
-    // // process the outer whiles
-    // for (int listPos = 1; listPos < enclosingWhileFunctions.size(); listPos++) {
-    // While outerWhile = enclosingWhileFunctions.get(listPos);
-    // DataIns relevantDataIn = enclosingWhileDataIns.get(listPos);
-    // result.add(
-    // getInputReferenceNestedWhile(outerWhile, relevantDataIn.getSource(),
-    // workflow));
-    // }
-    // }
-    // }
-    // }
-    // return result;
   }
 
   /**
@@ -395,64 +362,6 @@ public final class AfclCompounds {
   }
 
   /**
-   * Returns a list (ordered from inner to outer) of the enclosing while functions
-   * relevant to the given data in.
-   * 
-   * @param function the innermost while
-   * @param dataIn the data in of the innermost while
-   * @param workflow the workflow
-   * @param whileList the list of whiles (filled in this method)
-   * @param dataInList the list of dataIns (indeces correspond to while list;
-   *        filled in this method)
-   */
-  static void findEnclosingWhiles(Function function, DataIns dataIn, Workflow workflow,
-      List<While> whileList, List<DataIns> dataInList) {
-    // recursion base
-    if (!pointsToOuterFunction(dataIn.getSource(), workflow)) {
-      return;
-    }
-    // get the enclosing function
-    final Function srcFunction =
-        AfclApiWrapper.getFunction(workflow, UtilsAfcl.getProducerId(dataIn.getSource()));
-    // find the next dataIn
-
-    DataIns nextDataIn = UtilsAfcl.getDataInWithName(srcFunction, dataIn.getSource()).get();
-    if (srcFunction instanceof While) {
-      // add function to list
-      whileList.add((While) srcFunction);
-      dataInList.add(nextDataIn);
-    }
-    // continue on the next level
-    findEnclosingWhiles(srcFunction, nextDataIn, workflow, whileList, dataInList);
-  }
-
-  /**
-   * Generated the while input reference describing the relation between the given
-   * while functions w.r.t. the specified input.
-   * 
-   * @param outerWhile the outer while
-   * @param dataSrcString the string describing the data source
-   * @param workflow the workflow
-   * @return the while input reference describing the relation between the given
-   *         while functions w.r.t. the specified input
-   */
-//  static WhileInputReference getInputReferenceNestedWhile(While outerWhile, String dataSrcString,
-//      Workflow workflow) {
-//    // the first iteration input will be dictated by the innermost while
-//    String firstIterationInput = WhileInputReference.irrelevantString;
-//    // find the later iteration input (the while output matching the dataIn)
-//    Optional<DataOuts> relevantOut = Optional.empty();
-//    for (DataOuts dOut : outerWhile.getDataOuts()) {
-//      if (dOut.getName().equals(dataSrcString)) {
-//        relevantOut = Optional.of(dOut);
-//        break;
-//      }
-//    }
-//    String laterIterationsInput = relevantOut.get().getSource();
-//    return new WhileInputReference(firstIterationInput, laterIterationsInput, outerWhile.getName());
-//  }
-
-  /**
    * Returns the actual src that the given file src string points to.
    * 
    * @param srcString the src string from the AFCL file
@@ -464,51 +373,5 @@ public final class AfclCompounds {
     return UtilsAfcl.isSrcString(srcString)
         ? HierarchyLevellingAfcl.getSrcDataId(srcString, innerFunction, workflow)
         : srcString;
-  }
-
-  /**
-   * Generates the while input reference for the given data in of the given while
-   * function.
-   * 
-   * @param whileFunction the given while function
-   * @param dataName the data in name
-   * @param workflow the overall workflow
-   * @param innerFunction the function within the while compound
-   * @return the while input reference for the given data in of the given while
-   *         function
-   */
-  static WhileInputReference getInputReference(final While whileFunction, final String dataName,
-      final Workflow workflow, final Function innerFunction) {
-    // find the actual source of the While's data in
-    Optional<DataIns> dataInOpt = Optional.empty();
-    for (final DataIns dataIn : whileFunction.getDataIns()) {
-      if (dataIn.getName().equals(dataName)) {
-        dataInOpt = Optional.of(dataIn);
-        break;
-      }
-    }
-    final DataIns srcDataIn =
-        dataInOpt.orElseThrow(() -> new IllegalArgumentException("While function "
-            + whileFunction.getName() + " does not have a data in with the name " + dataName));
-    final String srcStringDataIn = srcDataIn.getSource();
-    final String actualSrcDataIn = UtilsAfcl.isSrcString(srcStringDataIn)
-        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataIn, innerFunction, workflow)
-        : srcStringDataIn;
-    // find the actual source of the While's data out
-    Optional<DataOuts> dataOutOpt = Optional.empty();
-    for (final DataOuts dataOut : whileFunction.getDataOuts()) {
-      if (dataOut.getName().equals(dataName)) {
-        dataOutOpt = Optional.of(dataOut);
-        break;
-      }
-    }
-    final DataOuts srcDataOut =
-        dataOutOpt.orElseThrow(() -> new IllegalArgumentException("While function "
-            + whileFunction.getName() + " does not have a data out with the name " + dataName));
-    final String srcStringDataOut = srcDataOut.getSource();
-    final String actualSrcDataOut = UtilsAfcl.isSrcString(srcStringDataOut)
-        ? HierarchyLevellingAfcl.getSrcDataId(srcStringDataOut, null, workflow)
-        : srcStringDataOut;
-    return new WhileInputReference(actualSrcDataIn, actualSrcDataOut, whileFunction.getName());
   }
 }

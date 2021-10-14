@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
-import at.uibk.dps.ee.visualization.model.EnactmentGraphViewer;
 import net.sf.opendse.model.properties.TaskPropertyService;
 
 class WhileWhileTest {
@@ -24,8 +23,6 @@ class WhileWhileTest {
         .filter(node -> TaskPropertyService.isCommunication(node)).count();
     int edgeNum = result.getEdgeCount();
 
-    EnactmentGraphViewer.view(result);
-    
     assertEquals(6, numFunc);
     assertEquals(13, numData);
     assertEquals(25, edgeNum);

@@ -16,6 +16,24 @@ import net.sf.opendse.model.Task;
 
 public class AfclCompoundsTest {
 
+//  @Test
+//  public void testFindEnclosingWhiles() {
+// // get the test workflow
+//    Workflow workflow = Graphs.getWhileNested();
+//    // retrieve while references
+//    String functionName = "increment";
+//    AtomicFunction function = (AtomicFunction) AfclApiWrapper.getFunction(workflow, functionName);
+//    DataIns dataIn = function.getDataIns().get(0);
+//    List<While> whileList = new ArrayList<>();
+//    List<DataIns> dataIns = new ArrayList<>();
+//    AfclCompounds.findEnclosingWhiles(function, dataIn, workflow, whileList, dataIns);
+//    
+//    assertEquals(2, whileList.size());
+//    assertEquals(2, dataIns.size());
+//    
+//    
+//  }
+  
   @Test
   public void testGetWhileReferences() {
     // get the test workflow

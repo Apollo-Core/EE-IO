@@ -2,7 +2,6 @@ package at.uibk.dps.ee.io.afcl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import at.uibk.dps.afcl.Function;
 import at.uibk.dps.afcl.Workflow;

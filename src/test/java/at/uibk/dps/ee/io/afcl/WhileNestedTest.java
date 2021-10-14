@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import at.uibk.dps.afcl.Workflow;
 import at.uibk.dps.ee.model.graph.EnactmentGraph;
 import at.uibk.dps.ee.model.properties.PropertyServiceDependency;
-import at.uibk.dps.ee.visualization.model.EnactmentGraphViewer;
 import net.sf.opendse.model.Dependency;
 import net.sf.opendse.model.properties.TaskPropertyService;
 
@@ -30,8 +29,6 @@ class WhileNestedTest {
     assertEquals(6, numFunc);
     assertEquals(14, numData);
     assertEquals(26, edgeNum);
-    
-    EnactmentGraphViewer.view(result);
     
     assertTrue(PropertyServiceDependency.isWhileAnnotated(markedEdge));
     assertEquals("increment/sum", PropertyServiceDependency.getDataRefForWhile(markedEdge, "innerWhile"));
