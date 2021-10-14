@@ -245,7 +245,7 @@ public final class UtilsAfcl {
    * @return a substring of the given src string correspopnding to the producer id
    *         (true) or the data id (false)
    */
-  protected static String getSrcSubString(final String srcString, final boolean producer) {
+  static String getSrcSubString(final String srcString, final boolean producer) {
     return producer ? srcString.split(ConstantsAfcl.SourceAffix)[0]
         : srcString.split(ConstantsAfcl.SourceAffix)[1];
   }
@@ -294,7 +294,7 @@ public final class UtilsAfcl {
    * @return either the first of the second substring of the given src string of
    *         an if out
    */
-  protected static String getIfOutSubString(final String srcString, final boolean first) {
+  static String getIfOutSubString(final String srcString, final boolean first) {
     return first ? srcString.split(ConstantsAfcl.IfFuncSeparator)[0]
         : srcString.split(ConstantsAfcl.IfFuncSeparator)[1];
   }

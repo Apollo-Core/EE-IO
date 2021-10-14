@@ -280,7 +280,17 @@ public final class AfclCompounds {
   }
 
 
-
+  /**
+   * Gathers the while references by traversing the dataIns from inner to outer
+   * compounds.
+   * 
+   * @param initialSource the source which the data in eventually points to (used
+   *        in the 1st iteration of the while)
+   * @param curSrcString the current src string (the position within the workflow)
+   * @param curFunction the current function we are at in the workflow
+   * @param workflow the workflow
+   * @param result the set of the while references (filled by running this method)
+   */
   static void gatherWhileRefsRec(final String initialSource, final String curSrcString,
       final Function curFunction, final Workflow workflow, final Set<WhileInputReference> result) {
     // base case
@@ -293,35 +303,41 @@ public final class AfclCompounds {
       // pointing to a function one level up -> continue
       final String dataId = UtilsAfcl.getDataId(curSrcString);
       if (function instanceof While) {
-        // find the source of the corresponding while data out
-        Optional<DataOuts> dOut = Optional.empty();
-        for (final DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
-          if (dataOut.getName().equals(dataId)) {
-            dOut = Optional.of(dataOut);
-            break;
-          }
-        }
-        final String referenceSrc = dOut.get().getSource();
+        final String referenceSrc = getNamedDataOut(function, dataId).getSource();
         // add while input reference
         final WhileInputReference inputReference =
             new WhileInputReference(initialSource, referenceSrc, function.getName());
         result.add(inputReference);
       }
-      // find the next dataIn and its srcString
-      Optional<DataIns> dIn = Optional.empty();
-      for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
-        if (dataIn.getName().equals(dataId)) {
-          dIn = Optional.of(dataIn);
-          break;
-        }
-      }
-      final String nextSrcString = dIn.get().getSource();
+      final String nextSrcString = getNamedDataIn(function, dataId).getSource();
       // continue on the next level
       gatherWhileRefsRec(initialSource, nextSrcString, function, workflow, result);
     } else {
       // pointing to an output on the same level
       return;
     }
+  }
+
+  static DataIns getNamedDataIn(Function function, String name) {
+    Optional<DataIns> dIn = Optional.empty();
+    for (final DataIns dataIn : AfclApiWrapper.getDataIns(function)) {
+      if (dataIn.getName().equals(name)) {
+        dIn = Optional.of(dataIn);
+        break;
+      }
+    }
+    return dIn.get();
+  }
+
+  static DataOuts getNamedDataOut(Function function, String name) {
+    Optional<DataOuts> dOut = Optional.empty();
+    for (final DataOuts dataOut : AfclApiWrapper.getDataOuts(function)) {
+      if (dataOut.getName().equals(name)) {
+        dOut = Optional.of(dataOut);
+        break;
+      }
+    }
+    return dOut.get();
   }
 
 
@@ -348,11 +364,11 @@ public final class AfclCompounds {
   /**
    * Returns true if the given data in points to an enclosing function.
    * 
-   * @param dataIn the data in
+   * @param srcString the source string of the dataIn/dataOut
    * @param workflow the workflow
    * @return true if the given data in points to an enclosing function
    */
-  static boolean pointsToOuterFunction(String srcString, Workflow workflow) {
+  static boolean pointsToOuterFunction(final String srcString, final Workflow workflow) {
     if (!UtilsAfcl.isSrcString(srcString)) {
       // Not pointing to data source -> irrelevant
       return false;
@@ -369,7 +385,8 @@ public final class AfclCompounds {
    * @param workflow the workflow
    * @return the actual src that the given file src string points to
    */
-  static String getActualSrc(String srcString, Function innerFunction, Workflow workflow) {
+  static String getActualSrc(final String srcString, final Function innerFunction,
+      final Workflow workflow) {
     return UtilsAfcl.isSrcString(srcString)
         ? HierarchyLevellingAfcl.getSrcDataId(srcString, innerFunction, workflow)
         : srcString;
