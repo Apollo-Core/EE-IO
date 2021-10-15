@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.opt4j.core.start.Constant;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import at.uibk.dps.ee.io.json.ResourceEntry;
 import at.uibk.dps.ee.io.json.ResourceInformationJsonFile;
 import at.uibk.dps.ee.io.resources.ResourceGraphProviderFile;
@@ -36,6 +37,7 @@ import net.sf.opendse.model.properties.TaskPropertyService;
  * @author Fedor Smirnov
  *
  */
+@Singleton
 public class SpecificationProviderFile implements SpecificationProvider {
 
   protected final EnactmentGraphProvider enactmentGraphProvider;
