@@ -5,7 +5,20 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # EE-IO
-Project defining the components for the IO, i.e., the processing of workflow and data input and the output of the processing results, of the Apollo-Core Enactment Engine.
+Repository containing the components responsible for reading in the orchestration input (describing the processed workflow, the available resources, and the application input) and processing the orchestration output (the result of the application).
+
+## Relevance
+
+### Repository relevant if
+
++ You want to use Apollo for application orchestration ([EE-Demo](https://github.com/Apollo-Core/EE-Demo)) is probably a good place to start; see below for a description of the format of the input files required by Apollo)
++ You want to create parsers for new input formats
++ You want to extend or modify the existing input format for the definition of the workflow (AFCL, see the [explanation](https://apollowf.github.io/learn.html) and the [source code](https://github.com/Apollo-AFCL/AFCLCore-AFCLv1.1)), the available resources (JSON - see below), and/or the input data (JSON - see below)
+
+### Repository less relevant if
+
++ You want implement a particular type of component, such as a scheduler (see [SC-Core](https://github.com/Apollo-Core/SC-Core)) or a new way of enacting functions
+
 
 ## Relations to other parts of Apollo-Core
 
@@ -19,21 +32,18 @@ Project defining the components for the IO, i.e., the processing of workflow and
 + EE-Demo
 + EE-Deploy
 
-### Relevant For
-+ Defining the syntax of the input files
-+ Creation of the Enactment Graph used as Apollo's system model
 
-## Input Files
+## Input File Format
 
 This section describes the content and the format of the files which can be used with the Apollo run-time system.
 
 ### Input Data
 
-The input data for processing is defined in JSON format.
+The input data for processing is defined in JSON format. See the *inputData* directory in [EE-Demo](https://github.com/Apollo-Core/EE-Demo) for example files.
 
 ### Workflow Definition
 
-The application workflow is defined with an AFCL file in YAML format.
+The application workflow is defined with an [AFCL](https://apollowf.github.io/learn.html) file in YAML format.
 
 ### Function Type Mappings
 
