@@ -38,9 +38,9 @@ dependencies {
     implementation project (':EE-Guice')
     implementation project (':EE-Model')
   }else {
-    implementation 'com.github.Apollo-Core:EE-Core:v1.0.0'
-    implementation 'com.github.Apollo-Core:EE-Guice:v1.0.1'
-    implementation 'com.github.Apollo-Core:EE-Model:v1.0.0'
+    implementation 'com.github.Apollo-Core:EE-Core:master-SNAPSHOT'
+    implementation 'com.github.Apollo-Core:EE-Guice:main-SNAPSHOT'
+    implementation 'com.github.Apollo-Core:EE-Model:main-SNAPSHOT'
   }
 
   // dependencies to projects from other parts of Apollo
@@ -51,13 +51,13 @@ dependencies {
 
   // gson to define the format of the exchanged messages
   implementation 'com.google.code.gson:gson:2.8.6'
-  
+
   // vertx
   implementation 'io.vertx:vertx-core:4.1.0'
 
   // dependency to Opt4J
-  //implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
-  implementation 'com.github.FedorSmirnov89:opt4j:2ad9d51292'
+  // as an example: dependency to Opt4J
+  implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
   // dependency to opendse
   implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
 
@@ -65,7 +65,7 @@ dependencies {
   testImplementation(platform('org.junit:junit-bom:5.7.2'))
   testImplementation('org.junit.jupiter:junit-jupiter')
   testCompile group: 'org.mockito',     name: 'mockito-core',     version: '3.4.4'
-  
+
   errorprone("com.google.errorprone:error_prone_core:2.9.0")
 }
 
