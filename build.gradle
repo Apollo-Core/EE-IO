@@ -46,10 +46,9 @@ dependencies {
   implementation 'io.vertx:vertx-core:4.1.0'
 
   // dependency to Opt4J
-  // as an example: dependency to Opt4J
-  implementation 'com.github.FedorSmirnov89:opt4j:-SNAPSHOT'
+  implementation 'com.github.FedorSmirnov89:opt4j:master-SNAPSHOT'
   // dependency to opendse
-  implementation 'com.github.FedorSmirnov89:opendse:-SNAPSHOT'
+  implementation 'com.github.FedorSmirnov89:opendse:master-SNAPSHOT'
 
   // test dependencies
   testImplementation(platform('org.junit:junit-bom:5.7.2'))
