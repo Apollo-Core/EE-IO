@@ -63,15 +63,17 @@ java {
 
 publishing {
   publications {
-      maven(MavenPublication) {
+    maven(MavenPublication) {
       from components.java
-      }
+    }
   }
 }
 
-wrapper {
-  gradleVersion = "6.8.3"
-  distributionType = Wrapper.DistributionType.ALL
+if (rootProject == project) {
+  wrapper {
+    gradleVersion = "6.8.3"
+    distributionType = Wrapper.DistributionType.ALL
+  }
 }
 
 test {

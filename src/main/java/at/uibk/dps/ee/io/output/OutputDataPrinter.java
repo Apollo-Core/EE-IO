@@ -2,47 +2,33 @@ package at.uibk.dps.ee.io.output;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
-
+import at.uibk.dps.ee.core.FailureHandler;
 import at.uibk.dps.ee.core.OutputDataHandler;
-import io.vertx.core.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link OutputDataPrinter} simply prints the enactment result to the
- * standard out.
+ * The {@link OutputDataPrinter} simply logs the enactment result (or the
+ * failure cause).
  * 
  * @author Fedor Smirnov
  *
  */
 @Singleton
-public class OutputDataPrinter implements OutputDataHandler {
+public class OutputDataPrinter implements OutputDataHandler, FailureHandler {
 
   protected final Logger outputLogger = LoggerFactory.getLogger(OutputDataPrinter.class);
 
   @Override
-  public void handleOutputData(final Future<JsonObject> outputData) {
-    outputData.onSuccess(this::handleSuccess);
-    outputData.onFailure(this::handleFailure);
+  public void handleFailure(Throwable failureCause) {
+    outputLogger.error("Enactment failed with message {}. No output produced.",
+        failureCause.getMessage());
   }
 
-  /**
-   * Success handler
-   * 
-   * @param json the enactment result
-   */
-  protected void handleSuccess(final JsonObject json) {
+  @Override
+  public void handleOutputData(JsonObject outputData) {
     outputLogger.info("Workflow executed correctly.");
-    outputLogger.info("Enactment result: {}", json.toString());
-  }
-
-  /**
-   * Failure handler
-   * 
-   * @param failureReason the reason for the failure
-   */
-  protected void handleFailure(final Throwable failureReason) {
-    outputLogger.error("Enactment failed. No output produced.");
+    outputLogger.info("Enactment result: {}", outputData.toString());
   }
 }
 

@@ -24,7 +24,7 @@ public class OutputDataPrinterTest {
     listAppender.start();
     logger.addAppender(listAppender);
 
-    tested.handleSuccess(testInput);
+    tested.handleOutputData(testInput);
     String expected1 = "Workflow executed correctly.";
     String expected2 = "Enactment result: " + testInput.toString();
 
