@@ -20,13 +20,13 @@ public class OutputDataPrinter implements OutputDataHandler, FailureHandler {
   protected final Logger outputLogger = LoggerFactory.getLogger(OutputDataPrinter.class);
 
   @Override
-  public void handleFailure(Throwable failureCause) {
+  public void handleFailure(final Throwable failureCause) {
     outputLogger.error("Enactment failed with message {}. No output produced.",
         failureCause.getMessage());
   }
 
   @Override
-  public void handleOutputData(JsonObject outputData) {
+  public void handleOutputData(final JsonObject outputData) {
     outputLogger.info("Workflow executed correctly.");
     outputLogger.info("Enactment result: {}", outputData.toString());
   }
